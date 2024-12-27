@@ -66,16 +66,11 @@ class Storage implements IStorage {
   }
 
   public function add($record): string {
-    $id = uniqid();
-    if (is_array($record)) {
-      $record['id'] = $id;
-    }
-    else if (is_object($record)) {
-      $record->id = $id;
-    }
-    $this->contents[$id] = $record;
+    $id = uniqid(); // Generate a unique ID
+    $record['id'] = $id; // Ensure the car's ID field matches the key
+    $this->contents[$id] = $record; // Store the car using the same ID as the key
     return $id;
-  }
+}
 
   public function findById(string $id) {
     return $this->contents[$id] ?? NULL;
@@ -99,8 +94,11 @@ class Storage implements IStorage {
   }
 
   public function update(string $id, $record) {
-    $this->contents[$id] = $record;
-  }
+    if (isset($this->contents[$id])) {
+        $record['id'] = $id; // Ensure the car's ID field matches the key
+        $this->contents[$id] = $record;
+    }
+}
 
   public function delete(string $id) {
     unset($this->contents[$id]);
@@ -118,7 +116,12 @@ class Storage implements IStorage {
     });
   }
 
-  public function deleteMany(callable $condition) {
+  public function save() {
+    // Use the correct save method to save to file (JSON, Serialize, etc.)
+    $this->io->save($this->contents);
+}
+
+    public function deleteMany(callable $condition) {
     $this->contents = array_filter($this->contents, function ($item) use ($condition) {
       return !$condition($item);
     });

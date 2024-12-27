@@ -5,27 +5,50 @@ require_once 'storage.php'; // Include the necessary storage file
 // Initialize the JSON file handler for users
 $userStorage = new Storage(new JsonIO('users.json'));
 
-// Process login
+// Initialize variables
+$email = $password = '';
+$errors = [];
+
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $email = $_POST['email'] ?? '';
     $password = $_POST['password'] ?? '';
 
-    // Search for user by email
-    $user = $userStorage->findOne(['email' => $email]);
+    // Validate email
+    if (empty($email)) {
+        $errors['email'] = 'Email is required.';
+    } elseif (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
+        $errors['email'] = 'Invalid email format.';
+    }
 
-    // Check if the user exists and passwords match
-    if ($user && password_verify($password, $user['password'])) {
-        // Store the user information in the session
-        $_SESSION['user'] = [
-            'name' => $user['fullname'],  // Make sure the name field exists in the user data
-            'email' => $user['email'],
-            'password' => $user['password'],
-            // Add other necessary user details here
-        ];
-        header('Location: homepage.php');
-        exit;
-    } else {
-        $error = 'Invalid email or password.';
+    // Validate password
+    if (empty($password)) {
+        $errors['password'] = 'Password is required.';
+    }
+
+    // If no errors, process login
+    if (empty($errors)) {
+        // Check for admin credentials
+        if ($email === 'admin@ikarrental.hu' && $password === 'admin') {
+            $_SESSION['admin'] = true;
+            header('Location: admin_profile.php');  // Admin Profile Page
+            exit();
+        }
+
+        // Search for user by email if not admin
+        $user = $userStorage->findOne(['email' => $email]);
+
+        // Check if the user exists and passwords match
+        if ($user && password_verify($password, $user['password'])) {
+            // Store the user information in the session
+            $_SESSION['user'] = [
+                'name' => $user['fullname'],  // Ensure the name field exists in the user data
+                'email' => $user['email'],
+            ];
+            header('Location: homepage.php');  // User's Homepage
+            exit;
+        } else {
+            $errors['general'] = 'Invalid email or password.';
+        }
     }
 }
 ?>
@@ -40,7 +63,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 </head>
 <body>
   <header>
-    <div class="logo">iKarRental</div>
+    <div class="logo"><a href="homepage.php">iKarRental</a></div>
     <div class="nav">
       <a href="login.php" class="nav-link">Login</a>
       <a href="registration.php" class="nav-button">Registration</a>
@@ -51,17 +74,23 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     <div class="login-container">
       <h1>Login</h1>
 
-      <?php if (!empty($error)): ?>
-        <div class="error"><?php echo $error; ?></div>
+      <?php if (!empty($errors['general'])): ?>
+        <div class="error"><?php echo htmlspecialchars($errors['general']); ?></div>
       <?php endif; ?>
 
       <form action="login.php" method="POST">
         <label for="email">Email address</label>
-        <input type="email" name="email" id="email" placeholder="Email" required>
-        
+        <input type="email" name="email" id="email" placeholder="Email" value="<?php echo htmlspecialchars($email); ?>">
+        <?php if (isset($errors['email'])): ?>
+          <div class="error"><?php echo htmlspecialchars($errors['email']); ?></div>
+        <?php endif; ?>
+
         <label for="password">Password</label>
-        <input type="password" name="password" id="password" placeholder="Password" required>
-        
+        <input type="password" name="password" id="password" placeholder="Password">
+        <?php if (isset($errors['password'])): ?>
+          <div class="error"><?php echo htmlspecialchars($errors['password']); ?></div>
+        <?php endif; ?>
+
         <button type="submit">Login</button>
       </form>
     </div>

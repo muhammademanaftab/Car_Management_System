@@ -1,12 +1,8 @@
 <?php
 
 function getUserReservations($userEmail) {
-    // Assuming user reservations are stored in 'reservations.json'
     $reservationStorage = new Storage(new JsonIO('reservations.json'));
-
-    // Fetch all reservations for the logged-in user
     $userReservations = $reservationStorage->findAll(['user_email' => $userEmail]);
-
     return $userReservations;
 }
 
@@ -19,15 +15,21 @@ if (!isset($_SESSION['user'])) {
     exit();
 }
 
-// Get the logged-in user data
+$is_logged_in = isset($_SESSION['user']); // Check if user is logged in
 $user = $_SESSION['user'];
+
+// Ensure profile picture has a default value if null or not set
+$profilePicture = $user['profile_picture'] ?? 'uploads/default_profile_picture.png';
+if (empty($profilePicture)) {
+    $profilePicture = 'uploads/default_profile_picture.png';
+}
 
 // Handle profile picture upload and data update
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $updatedName = $_POST['name'] ?? $user['name'];
     $updatedEmail = $_POST['email'] ?? $user['email'];
     $updatedPassword = $_POST['password'] ?? '';
-    $updatedProfilePicture = $user['profile_picture']; // Default to the existing profile picture
+    $updatedProfilePicture = $profilePicture;
 
     // If a new profile picture is uploaded, handle it
     if (isset($_FILES['profile_picture']) && $_FILES['profile_picture']['error'] === UPLOAD_ERR_OK) {
@@ -35,22 +37,21 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $fileName = $_FILES['profile_picture']['name'];
         $uploadDir = 'uploads/profile_pictures/';
         if (!is_dir($uploadDir)) {
-            mkdir($uploadDir, 0777, true); // Create directory if it doesn't exist
+            mkdir($uploadDir, 0777, true);
         }
         $newFileName = uniqid() . '_' . $fileName;
         $filePath = $uploadDir . $newFileName;
 
-        // Move uploaded file
         if (move_uploaded_file($fileTmpPath, $filePath)) {
             $updatedProfilePicture = $filePath;
         }
     }
 
-    // Handle password update (if provided)
+    // Handle password update
     if (!empty($updatedPassword)) {
-        $updatedPassword = password_hash($updatedPassword, PASSWORD_BCRYPT); // Hash the password
+        $updatedPassword = password_hash($updatedPassword, PASSWORD_BCRYPT);
     } else {
-        $updatedPassword = $user['password']; // Retain old password if not updated
+        $updatedPassword = $user['password'];
     }
 
     // Update user data in session and save to users.json
@@ -59,11 +60,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $user['password'] = $updatedPassword;
     $user['profile_picture'] = $updatedProfilePicture;
 
-    // Save the updated user data back to users.json
+    // Save updated data to users.json
     $userStorage = new Storage(new JsonIO('users.json'));
     $userStorage->update($user['email'], $user);
 
-    // Update session data
     $_SESSION['user'] = $user;
 
     echo "<script>alert('Profile updated successfully!');</script>";
@@ -79,44 +79,54 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     <link rel="stylesheet" href="profile.css">
 </head>
 <body>
-  <header>
-    <div class="logo">iKarRental</div>
-    <div class="nav">
-      <a href="logout.php" class="nav-button">Logout</a>
-    </div>
-  </header>
+    <header>
+        <div class="logo"><a href="homepage.php">iKarRental</a></div>
+        <div class="nav">
+            <?php if ($is_logged_in): ?>
+                <div class="profile-dropdown">
+                    <button class="profile-btn">Welcome, <?php echo htmlspecialchars($user['name']); ?></button>
+                    <div class="dropdown-content">
+                        <a href="profile.php">Profile Settings</a>
+                        <a href="reservations.php">My Reservations</a>
+                    </div>
+                </div>
+                <a href="logout.php" class="button">Logout</a>
+            <?php else: ?>
+                <a href="login.php">Login</a>
+                <a href="registration.php" class="button">Registration</a>
+            <?php endif; ?>
+        </div>
+    </header>
 
-  <main>
-    <div class="profile-container">
-      <h1>Welcome, <?php echo htmlspecialchars($user['name']); ?></h1>
-      <div class="profile-details">
-        <!-- Display Profile Picture -->
-        <img src="<?php echo htmlspecialchars($user['profile_picture']); ?>" alt="Profile Picture" class="profile-picture">
-        <p>Email: <?php echo htmlspecialchars($user['email']); ?></p>
-      </div>
+    <main>
+        <div class="profile-container">
+            <h1>Welcome, <?php echo htmlspecialchars($user['name']); ?></h1>
+            <div class="profile-details">
+                <img src="<?php echo htmlspecialchars($profilePicture); ?>" alt="Profile Picture" class="profile-picture">
+                <p>Email: <?php echo htmlspecialchars($user['email']); ?></p>
+            </div>
 
-      <!-- Profile Update Form -->
-      <h2>Update Your Profile</h2>
-      <form action="profile.php" method="POST" enctype="multipart/form-data">
-        <div>
-            <label for="name">Full Name</label>
-            <input type="text" name="name" id="name" value="<?php echo htmlspecialchars($user['name']); ?>" required>
+            <h2>Update Your Profile</h2>
+            <form action="profile.php" method="POST" enctype="multipart/form-data">
+                <div>
+                    <label for="name">Full Name</label>
+                    <input type="text" name="name" id="name" value="<?php echo htmlspecialchars($user['name']); ?>" required>
+                </div>
+                <div>
+                    <label for="email">Email</label>
+                    <input type="email" name="email" id="email" value="<?php echo htmlspecialchars($user['email']); ?>" required>
+                </div>
+                <div>
+                    <label for="password">New Password (Leave blank to keep current)</label>
+                    <input type="password" name="password" id="password">
+                </div>
+                <div>
+                    <label for="profile_picture">Upload Profile Picture</label>
+                    <input type="file" name="profile_picture" id="profile_picture">
+                </div>
+                <button type="submit">Update Profile</button>
+            </form>
         </div>
-        <div>
-            <label for="email">Email</label>
-            <input type="email" name="email" id="email" value="<?php echo htmlspecialchars($user['email']); ?>" required>
-        </div>
-        <div>
-            <label for="password">New Password (Leave blank to keep current)</label>
-            <input type="password" name="password" id="password">
-        </div>
-        <div>
-            <label for="profile_picture">Upload Profile Picture</label>
-            <input type="file" name="profile_picture" id="profile_picture">
-        </div>
-        <button type="submit">Update Profile</button>
-      </form>
-    </div>
-  </main>
+    </main>
 </body>
 </html>
