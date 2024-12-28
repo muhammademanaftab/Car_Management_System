@@ -48,17 +48,29 @@ if (isset($_GET['delete_reservation'])) {
 // Handle reservation editing
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['edit_reservation'])) {
     $reservationId = $_POST['reservation_id'];
+
+    // Retrieve the previous reservation data
+    $reservationToEdit = $reservationStorage->findById($reservationId);
+
+    if (!$reservationToEdit) {
+        die('Reservation not found.');
+    }
+
+    // Prepare the updated reservation data
     $editedReservation = [
         'car_name' => $_POST['car_name'],
         'user_email' => $_POST['user_email'],
         'start_date' => $_POST['start_date'],
         'end_date' => $_POST['end_date'],
-        'car_id' => $_POST['car_id'], // Ensure car_id is retained
-        'image' => $_POST['image'] ?? '' // Handle missing image gracefully
+        'car_id' => $_POST['car_id'],
+        // Always use the previous image
+        'car_image' => $reservationToEdit['car_image']
     ];
 
+    // Update the reservation
     $reservationStorage->update($reservationId, $editedReservation);
 
+    // Redirect to avoid resubmission
     header('Location: admin_profile.php');
     exit();
 }
@@ -204,9 +216,6 @@ if (isset($_GET['edit_car'])) {
                 <label for="end_date">End Date</label>
                 <input type="date" name="end_date" id="end_date" value="<?php echo htmlspecialchars($reservationToEdit['end_date']); ?>" required>
 
-                <label for="image">Image URL</label>
-                <input type="text" name="image" id="image" value="<?php echo htmlspecialchars($reservationToEdit['image'] ?? ''); ?>" required>
-
                 <input type="hidden" name="car_id" value="<?php echo htmlspecialchars($reservationToEdit['car_id']); ?>">
 
                 <button type="submit" name="edit_reservation">Save Changes</button>
@@ -292,15 +301,18 @@ if (isset($_GET['edit_car'])) {
         <?php endif; ?>
 
         <h3>Existing Cars</h3>
-        <ul>
-            <?php foreach ($cars as $id => $car): ?>
-                <li>
-                    <?php echo htmlspecialchars($car['brand'] . ' ' . $car['model']); ?>
-                    <a href="admin_profile.php?edit_car=<?php echo urlencode($id); ?>">Edit</a> |
-                    <a href="admin_profile.php?delete_car=<?php echo urlencode($id); ?>" onclick="return confirm('Are you sure?')">Delete</a>
-                </li>
-            <?php endforeach; ?>
-        </ul>
+<ul>
+    <?php foreach ($cars as $id => $car): ?>
+        <li>
+            <?php echo htmlspecialchars($car['brand'] . ' ' . $car['model']); ?>
+            <div class="button-container">
+                <a href="admin_profile.php?edit_car=<?php echo urlencode($id); ?>" class="edit">Edit</a> |
+                <a href="admin_profile.php?delete_car=<?php echo urlencode($id); ?>" class="delete" onclick="return confirm('Are you sure?')">Delete</a>
+            </div>
+        </li>
+    <?php endforeach; ?>
+</ul>
+
     </main>
 </body>
 
