@@ -1,6 +1,6 @@
 <?php
 session_start();
-require_once 'storage.php'; 
+require_once 'storage.php';
 
 // Check if the user is logged in
 $is_logged_in = isset($_SESSION['user']);
@@ -78,7 +78,8 @@ if ($is_logged_in) {
     $userReservations = [];
 }
 
-function getUserReservations($userEmail) {
+function getUserReservations($userEmail)
+{
     $reservationStorage = new Storage(new JsonIO('reservations.json'));
     return $reservationStorage->findAll(['user_email' => $userEmail]);
 }
@@ -86,12 +87,14 @@ function getUserReservations($userEmail) {
 
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>iKarRental</title>
     <link rel="stylesheet" href="homepage.css">
 </head>
+
 <body>
     <header>
         <div class="logo"><a href="homepage.php">iKarRental</a></div>
@@ -189,6 +192,3 @@ function getUserReservations($userEmail) {
     </main>
 </body>
 </html>
-
-
-

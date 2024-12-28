@@ -1,25 +1,14 @@
 {
-    "1": {
-        "id": 2,
+    "2": {
         "brand": "Nissan",
         "model": "Altima",
         "year": 2016,
-        "transmission": "Automatic",
         "fuel_type": "Petrol",
-        "passengers": 5,
+        "transmission": "Automatic",
+        "passengers": 8,
         "daily_price_huf": 14400,
-        "image": "https:\/\/media.ed.edmunds-media.com\/nissan\/altima\/2016\/oem\/2016_nissan_altima_sedan_25-sr_fq_oem_1_815.jpg"
-    },
-    "2": {
-        "id": 3,
-        "brand": "Volkswagen",
-        "model": "Jetta",
-        "year": 2014,
-        "transmission": "Manual",
-        "fuel_type": "Diesel",
-        "passengers": 5,
-        "daily_price_huf": 13000,
-        "image": "https:\/\/media.ed.edmunds-media.com\/volkswagen\/jetta\/2025\/oem\/2025_volkswagen_jetta_sedan_sel_fq_oem_1_815.jpg"
+        "image": "https:\/\/media.ed.edmunds-media.com\/nissan\/altima\/2016\/oem\/2016_nissan_altima_sedan_25-sr_fq_oem_1_815.jpg",
+        "id": "2"
     },
     "3": {
         "id": 4,
@@ -53,16 +42,5 @@
         "passengers": 5,
         "daily_price_huf": 45000,
         "image": "https:\/\/media.ed.edmunds-media.com\/tesla\/model-s\/2021\/oem\/2021_tesla_model-s_sedan_plaid_fq_oem_1_815.jpg"
-    },
-    "8": {
-        "id": 9,
-        "brand": "Rivian",
-        "model": "R1T",
-        "year": 2022,
-        "transmission": "Automatic",
-        "fuel_type": "Electric",
-        "passengers": 5,
-        "daily_price_huf": 40000,
-        "image": "https:\/\/media.ed.edmunds-media.com\/rivian\/r1t\/2022\/oem\/2022_rivian_r1t_crew-cab-pickup_launch-edition_fq_oem_1_815.jpg"
     }
 }
