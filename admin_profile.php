@@ -108,7 +108,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         }
 
         if (isset($_POST['add_car']) && empty($errors)) {
-            // Add a new car
             $newCar = [
                 'brand' => $brand,
                 'model' => $model,
@@ -120,9 +119,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 'image' => $image,
             ];
             $carStorage->add($newCar);
+            $carStorage->save(); // Explicitly save the changes
             header('Location: admin_profile.php');
             exit();
         }
+        
 
         if (isset($_POST['edit_car']) && empty($errors)) {
             // Edit an existing car
@@ -144,13 +145,20 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     }
 }
 
-// Fetch car data for editing
 if (isset($_GET['edit_car'])) {
-    $carIdToEdit = $_GET['edit_car'];
+    error_log("GET parameter 'edit_car': " . $_GET['edit_car']);
+    $carIdToEdit = (int)$_GET['edit_car']; // Cast to int for comparison
+    error_log("Casting 'edit_car' to int: " . $carIdToEdit);
+
     $carToEdit = $carStorage->findById($carIdToEdit);
+
+    if (!$carToEdit) {
+        die("Car not found with ID: $carIdToEdit");
+    }
 } else {
     $carToEdit = null;
 }
+
 
 ?>
 
@@ -227,35 +235,35 @@ if (isset($_GET['edit_car'])) {
         <h3>Add New Car</h3>
         <form method="POST">
             <label for="brand">Brand</label>
-            <input type="text" name="brand" id="brand" required>
+            <input type="text" name="brand" id="brand" >
 
             <label for="model">Model</label>
-            <input type="text" name="model" id="model" required>
+            <input type="text" name="model" id="model" >
 
             <label for="year">Year</label>
-            <input type="number" name="year" id="year" required>
+            <input type="number" name="year" id="year" >
 
             <label for="fuel_type">Fuel Type</label>
-            <select name="fuel_type" id="fuel_type" required>
+            <select name="fuel_type" id="fuel_type" >
                 <option value="Petrol">Petrol</option>
                 <option value="Diesel">Diesel</option>
                 <option value="Electric">Electric</option>
             </select>
 
             <label for="transmission">Transmission</label>
-            <select name="transmission" id="transmission" required>
+            <select name="transmission" id="transmission" >
                 <option value="Automatic">Automatic</option>
                 <option value="Manual">Manual</option>
             </select>
 
             <label for="passengers">Seats</label>
-            <input type="number" name="passengers" id="passengers" required>
+            <input type="number" name="passengers" id="passengers" >
 
             <label for="price">Price per Day (HUF)</label>
-            <input type="number" name="price" id="price" required>
+            <input type="number" name="price" id="price" >
 
             <label for="image">Image URL</label>
-            <input type="text" name="image" id="image" required>
+            <input type="text" name="image" id="image" >
 
             <button type="submit" name="add_car">Add Car</button>
         </form>
@@ -263,7 +271,7 @@ if (isset($_GET['edit_car'])) {
         <?php if ($carToEdit): ?>
             <h3>Edit Car</h3>
             <form method="POST">
-                <input type="hidden" name="car_id" value="<?php echo htmlspecialchars($carToEdit['id']); ?>">
+            <input type="hidden" name="car_id" value="<?php echo htmlspecialchars($carToEdit['id']); ?>">
 
                 <label for="brand">Brand</label>
                 <input type="text" name="brand" id="brand" value="<?php echo htmlspecialchars($carToEdit['brand']); ?>" required>
@@ -301,17 +309,17 @@ if (isset($_GET['edit_car'])) {
         <?php endif; ?>
 
         <h3>Existing Cars</h3>
-<ul>
-    <?php foreach ($cars as $id => $car): ?>
-        <li>
-            <?php echo htmlspecialchars($car['brand'] . ' ' . $car['model']); ?>
-            <div class="button-container">
-                <a href="admin_profile.php?edit_car=<?php echo urlencode($id); ?>" class="edit">Edit</a> |
-                <a href="admin_profile.php?delete_car=<?php echo urlencode($id); ?>" class="delete" onclick="return confirm('Are you sure?')">Delete</a>
-            </div>
-        </li>
-    <?php endforeach; ?>
-</ul>
+        <ul>
+            <?php foreach ($cars as $id => $car): ?>
+                <li>
+                    <?php echo htmlspecialchars($car['brand'] . ' ' . $car['model']); ?>
+                    <div class="button-container">
+                        <a href="admin_profile.php?edit_car=<?php echo urlencode($car['id']); ?>" class="edit">Edit</a> |
+                        <a href="admin_profile.php?delete_car=<?php echo urlencode($id); ?>" class="delete" onclick="return confirm('Are you sure?')">Delete</a>
+                    </div>
+                </li>
+            <?php endforeach; ?>
+        </ul>
 
     </main>
 </body>

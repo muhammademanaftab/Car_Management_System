@@ -80,21 +80,31 @@ class Storage implements IStorage
 
   public function add($record): string
   {
-    $id = uniqid(); // Generate a unique ID
-    $record['id'] = $id; // Ensure the car's ID field matches the key
-    $this->contents[$id] = $record; // Store the car using the same ID as the key
-    return $id;
+      // Find the highest existing ID and increment it
+      $maxId = 0;
+      foreach ($this->contents as $item) {
+          $maxId = max($maxId, (int)$item['id']);
+      }
+      $id = $maxId + 1; // Ensure the new ID is unique and sequential
+      $record['id'] = $id;
+      $this->contents[$id] = $record; // Add the car to the storage
+      return $id;
   }
-
+  
+  
   public function findById($id)
   {
-    foreach ($this->contents as $item) {
-      if ((int)$item['id'] === (int)$id) { // Match by 'id' field in the car object
-        return $item;
+      foreach ($this->contents as $item) {
+          // Ensure both IDs are treated consistently as integers
+          if ((int)$item['id'] === (int)$id) {
+              return $item;
+          }
       }
-    }
-    return null; // Return null if no match found
+      error_log("Car with ID $id not found.");
+      return null;
   }
+  
+  
 
 
   public function findAll(array $params = [])
