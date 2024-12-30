@@ -3,31 +3,108 @@ session_start();
 require_once 'storage.php';
 
 // Check if the user is logged in
-$is_logged_in = isset($_SESSION['user']);
-$user = $is_logged_in ? $_SESSION['user'] : null;
+$is_logged_in = false;
+if (isset($_SESSION['user'])) {
+    $is_logged_in = true;
+    $user = $_SESSION['user'];
+} else {
+    $user = null;
+}
 
-// Initialize the JSON file handler for cars
+// Initialize the JSON file handlers
 $carStorage = new Storage(new JsonIO('cars.json'));
+$reservationStorage = new Storage(new JsonIO('reservations.json'));
 
-// Fetch all cars
+// Fetch all cars and reservations
 $cars = $carStorage->findAll();
+$reservations = $reservationStorage->findAll();
+
+// Get today's date
+$today = date('Y-m-d');
+
+// Initialize variables for filtering dates
+$from_date = '';
+$until_date = '';
+
+if (isset($_GET['from'])) {
+    $from_date = $_GET['from'];
+}
+
+if (isset($_GET['until'])) {
+    $until_date = $_GET['until'];
+}
+
+
+
+// Filter out booked cars
+$available_cars = [];
+foreach ($cars as $car) {
+    $is_available = true;
+
+    foreach ($reservations as $reservation) {
+        if ($reservation['car_id'] == $car['id']) {
+            // Check if the car is booked for the current or user-specified period
+            $reservation_start = $reservation['start_date'];
+            $reservation_end = $reservation['end_date'];
+
+            if (($from_date != '' && $until_date != '' && 
+                (($reservation_start <= $until_date && $reservation_end >= $from_date) ||
+                 ($reservation_start <= $today && $reservation_end >= $today))) ||
+                ($from_date == '' && $until_date == '' && $reservation_start <= $today && $reservation_end >= $today)) {
+                $is_available = false;
+                break;
+            }
+        }
+    }
+
+    if ($is_available) {
+        $available_cars[] = $car;
+    }
+}
 
 // Initialize variables for validation and errors
 $errors = [];
-$seats = isset($_GET['seats']) ? max((int)$_GET['seats'], 0) : 0;
-$transmission = isset($_GET['transmission']) ? trim($_GET['transmission']) : '';
-$min_price = isset($_GET['min_price']) ? (int)$_GET['min_price'] : 0;
-$max_price = isset($_GET['max_price']) ? (int)$_GET['max_price'] : 99999;
-$from_date = isset($_GET['from']) ? $_GET['from'] : '';
-$until_date = isset($_GET['until']) ? $_GET['until'] : '';
-$today = date('Y-m-d');
+$seats = 0;
+if (isset($_GET['seats'])) {
+    $seats = (int)$_GET['seats'];
+}
+
+$transmission = '';
+if (isset($_GET['transmission'])) {
+    $transmission = trim($_GET['transmission']);
+}
+
+$min_price = 0;
+if (isset($_GET['min_price'])) {
+    $min_price = (int)$_GET['min_price'];
+}
+
+$max_price = 99999;
+if (isset($_GET['max_price'])) {
+    $max_price = (int)$_GET['max_price'];
+}
+
+$from_date = '';
+if (isset($_GET['from'])) {
+    $from_date = $_GET['from'];
+}
+
+$until_date = '';
+if (isset($_GET['until'])) {
+    $until_date = $_GET['until'];
+}
 
 // Validate dates
-if ($from_date && (!preg_match('/^\d{4}-\d{2}-\d{2}$/', $from_date) || $from_date < $today)) {
-    $errors['from'] = "The 'From' date must be today or later and in a valid format (YYYY-MM-DD).";
+if ($from_date != '') {
+    if (!strtotime($from_date) || $from_date < $today) {
+        $errors['from'] = "The 'From' date must be today or later and in a valid format.";
+    }
 }
-if ($until_date && (!preg_match('/^\d{4}-\d{2}-\d{2}$/', $until_date) || $until_date <= $from_date)) {
-    $errors['until'] = "The 'Until' date must be valid, later than the 'From' date, and in the format YYYY-MM-DD.";
+
+if ($until_date != '') {
+    if (!strtotime($until_date) || $until_date <= $from_date) {
+        $errors['until'] = "The 'Until' date must be later than the 'From' date and in a valid format.";
+    }
 }
 
 // Validate prices
@@ -38,10 +115,10 @@ if ($max_price < $min_price) {
     $errors['max_price'] = "The maximum price must be greater than or equal to the minimum price.";
 }
 
-// Filter cars only if no errors
+// Filter cars based on user input
 $filtered_cars = [];
 if (empty($errors)) {
-    $filtered_cars = array_filter($cars, function ($car) use ($seats, $transmission, $min_price, $max_price, $from_date, $until_date) {
+    foreach ($available_cars as $car) {
         $matches = true;
 
         // Filter by seats
@@ -50,7 +127,7 @@ if (empty($errors)) {
         }
 
         // Filter by transmission
-        if ($transmission !== '' && strtolower($car['transmission']) !== strtolower($transmission)) {
+        if ($transmission != '' && strtolower($car['transmission']) != strtolower($transmission)) {
             $matches = false;
         }
 
@@ -60,30 +137,32 @@ if (empty($errors)) {
         }
 
         // Filter by availability dates
-        if ($from_date && isset($car['available_from']) && $car['available_from'] > $from_date) {
+        if ($from_date != '' && isset($car['available_from']) && $car['available_from'] > $from_date) {
             $matches = false;
         }
-        if ($until_date && isset($car['available_until']) && $car['available_until'] < $until_date) {
+        if ($until_date != '' && isset($car['available_until']) && $car['available_until'] < $until_date) {
             $matches = false;
         }
 
-        return $matches;
-    });
+        if ($matches) {
+            $filtered_cars[] = $car;
+        }
+    }
 }
 
 // Include the user's reservations if logged in
+$userReservations = [];
 if ($is_logged_in) {
     $userReservations = getUserReservations($user['email']);
-} else {
-    $userReservations = [];
 }
 
-function getUserReservations($userEmail)
-{
+function getUserReservations($userEmail) {
     $reservationStorage = new Storage(new JsonIO('reservations.json'));
     return $reservationStorage->findAll(['user_email' => $userEmail]);
 }
 ?>
+
+
 
 <!DOCTYPE html>
 <html lang="en">
@@ -96,18 +175,17 @@ function getUserReservations($userEmail)
 </head>
 
 <body>
-    <header>
+<header>
         <div class="logo"><a href="homepage.php">iKarRental</a></div>
         <div class="nav">
             <?php if ($is_logged_in): ?>
                 <div class="profile-dropdown">
                     <button class="profile-btn">Welcome, <?php echo htmlspecialchars($user['name']); ?></button>
                     <div class="dropdown-content">
-                        <a href="profile.php">Profile Settings</a>
                         <a href="reservations.php">My Reservations</a>
                     </div>
                 </div>
-                <a href="logout.php">Logout</a>
+                <a href="logout.php" class="button">Logout</a>
             <?php else: ?>
                 <a href="login.php">Login</a>
                 <a href="registration.php" class="button">Registration</a>

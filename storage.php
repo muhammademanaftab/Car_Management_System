@@ -105,16 +105,17 @@ class Storage implements IStorage
 
 
   public function findAll(array $params = [])
-  {
+{
     return array_filter($this->contents, function ($item) use ($params) {
-      foreach ($params as $key => $value) {
-        if (((array)$item)[$key] !== $value) {
-          return FALSE;
+        foreach ($params as $key => $value) {
+            if (!isset($item[$key]) || $item[$key] != $value) { // Loose comparison to handle type differences
+                return false;
+            }
         }
-      }
-      return TRUE;
+        return true;
     });
-  }
+}
+
 
   public function findOne(array $params = [])
   {

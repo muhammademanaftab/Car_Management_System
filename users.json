@@ -1,19 +1,19 @@
 {
     "6769c4b55679a": {
-        "fullname": "emn",
+        "name": "emn",
         "email": "emanaftab2022@gmail.com",
         "password": "$2y$10$MKsDHUPd2mkxOF99ovTTl.ibhVexdojb40losEjsEA7PsPcDz52i6",
         "status": "user",
         "id": "6769c4b55679a"
     },
     "emanaftab2022@gmail.com": {
-        "name": "eman",
+        "name": "Eman",
         "email": "emanaftab2022@gmail.com",
-        "password": "$2y$10$MKsDHUPd2mkxOF99ovTTl.ibhVexdojb40losEjsEA7PsPcDz52i6",
-        "profile_picture": "uploads\/profile_pictures\/6769d04806211_Photo White Background.JPG"
+        "password": null,
+        "id": 0
     },
     "676e802f4a857": {
-        "fullname": "sdnlkn",
+        "name": "sdnlkn",
         "email": "emanaftab2023@gmail.com",
         "password": "$2y$10$jqZcb45LWJ.2JD\/mDv1MruH095CfuyGrkxRdgchEIbqL293a5Nkfe",
         "status": "user",

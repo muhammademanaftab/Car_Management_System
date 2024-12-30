@@ -34,17 +34,39 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $user_email = $_SESSION['user']['email'];
     $today = date('Y-m-d');
 
+    // Fetch existing reservations for the car
+    $reservationStorage = new Storage(new JsonIO('reservations.json'));
+    $existing_reservations = $reservationStorage->findAll(['car_id' => $car_id]);
+
     // Validate the dates
-    if (!$from_date || !preg_match('/^\d{4}-\d{2}-\d{2}$/', $from_date) || $from_date < $today) {
+    if (!$from_date || !strtotime($from_date) || $from_date < $today) {
         $errors['from_date'] = "The 'From' date must be today or later and in the correct format (YYYY-MM-DD).";
     }
-    if (!$until_date || !preg_match('/^\d{4}-\d{2}-\d{2}$/', $until_date) || $until_date <= $from_date) {
+    if (!$until_date || !strtotime($until_date) || $until_date <= $from_date) {
         $errors['until_date'] = "The 'Until' date must be after the 'From' date and in the correct format (YYYY-MM-DD).";
     }
 
+   
+// Check for overlapping reservations
+foreach ($existing_reservations as $reservation) {
+    $reservation_start = $reservation['start_date'];
+    $reservation_end = $reservation['end_date'];
+
+    // Overlap conditions
+    if (
+        ($from_date >= $reservation_start && $from_date <= $reservation_end) || // Start date is within an existing reservation
+        ($until_date >= $reservation_start && $until_date <= $reservation_end) || // End date is within an existing reservation
+        ($from_date <= $reservation_start && $until_date >= $reservation_end)    // Fully overlaps an existing reservation
+    ) {
+        $errors['reservation'] = "The car is already booked for the selected dates.";
+        break;
+    }
+}
+
+
+
     // If no errors, proceed with booking
     if (empty($errors)) {
-        $reservationStorage = new Storage(new JsonIO('reservations.json'));
         $reservation = [
             'car_id' => $car['id'],
             'car_name' => $car['brand'] . ' ' . $car['model'],
@@ -55,7 +77,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         ];
         $reservationStorage->add($reservation);
 
-        header('Location: profile.php');
+        header('Location: reservations.php');
         exit();
     }
 }
@@ -109,7 +131,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                     <label for="from_date">From</label>
                     <input type="date" name="from_date" id="from_date" value="<?php echo htmlspecialchars($_POST['from_date'] ?? ''); ?>" required>
                     <?php if (isset($errors['from_date'])): ?>
-                        <p class="error" style="margin-top: 10px;"><?php echo $errors['from_date']; ?></p>
+                        <p class="error" style="margin-top: 10px; color: red;"><?php echo $errors['from_date']; ?></p>
                     <?php endif; ?>
                 </div>
 
@@ -117,10 +139,14 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                     <label for="until_date">Until</label>
                     <input type="date" name="until_date" id="until_date" value="<?php echo htmlspecialchars($_POST['until_date'] ?? ''); ?>" required>
                     <?php if (isset($errors['until_date'])): ?>
-                        <p class="error" style="margin-top: 10px;"><?php echo $errors['until_date']; ?></p>
+                        <p class="error" style="margin-top: 10px; color: red;"><?php echo $errors['until_date']; ?></p>
                     <?php endif; ?>
                 </div>
-                        
+
+                <?php if (isset($errors['reservation'])): ?>
+                    <p class="error" style="margin-top: 10px; color: red;"><?php echo $errors['reservation']; ?></p>
+                <?php endif; ?>
+
                 <button type="submit">Confirm Booking</button>
             </form>
         </section>
