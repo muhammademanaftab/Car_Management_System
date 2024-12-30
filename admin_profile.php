@@ -116,6 +116,7 @@ $reservations = $reservationsStorage->findAll();
 ?>
 <!DOCTYPE html>
 <html>
+
 <head>
     <link rel="stylesheet" href="admin_profile.css">
     <title>Admin Profile</title>
@@ -125,7 +126,17 @@ $reservations = $reservationsStorage->findAll();
         }
     </script>
 </head>
+
 <body>
+
+    <header>
+        <div class="logo"><a href="homepage.php">iKarRental</a></div>
+        <div class="nav">
+            <a href="admin_profile.php">Admin Dashboard</a>
+            <a href="logout.php">Logout</a>
+        </div>
+    </header>
+
     <div class="container">
         <h1>Admin Profile</h1>
 
@@ -160,7 +171,7 @@ $reservations = $reservationsStorage->findAll();
         </table>
 
         <h2>Car Management</h2>
-        <button onclick="toggleForm('addForm')">Add New Car</button>
+        <button onclick="toggleForm('addForm')" id="add_car_btn">Add New Car</button>
 
         <div id="addForm" class="form-section <?= $showAddForm ? 'visible' : '' ?>">
             <form method="post">
@@ -171,7 +182,7 @@ $reservations = $reservationsStorage->findAll();
                 <span style="color:red;"> <?= $errors['model'] ?? '' ?> </span><br>
                 <label>Year: <input type="number" name="year" required value="<?= $_POST['year'] ?? '' ?>"></label>
                 <span style="color:red;"> <?= $errors['year'] ?? '' ?> </span><br>
-                <label>Transmission: 
+                <label>Transmission:
                     <select name="transmission" required>
                         <option value="">Select Transmission</option>
                         <option value="Manual" <?= (isset($_POST['transmission']) && $_POST['transmission'] == 'Manual') ? 'selected' : '' ?>>Manual</option>
@@ -179,7 +190,7 @@ $reservations = $reservationsStorage->findAll();
                     </select>
                 </label>
                 <span style="color:red;"> <?= $errors['transmission'] ?? '' ?> </span><br>
-                <label>Fuel Type: 
+                <label>Fuel Type:
                     <select name="fuel_type" required>
                         <option value="">Select Fuel Type</option>
                         <option value="Petrol" <?= (isset($_POST['fuel_type']) && $_POST['fuel_type'] == 'Petrol') ? 'selected' : '' ?>>Petrol</option>
@@ -206,13 +217,13 @@ $reservations = $reservationsStorage->findAll();
                     <label>Brand: <input type="text" name="brand" value="<?= $editingCar['brand'] ?>" required></label><br>
                     <label>Model: <input type="text" name="model" value="<?= $editingCar['model'] ?>" required></label><br>
                     <label>Year: <input type="number" name="year" value="<?= $editingCar['year'] ?>" required></label><br>
-                    <label>Transmission: 
+                    <label>Transmission:
                         <select name="transmission" required>
                             <option value="Manual" <?= ($editingCar['transmission'] == 'Manual') ? 'selected' : '' ?>>Manual</option>
                             <option value="Automatic" <?= ($editingCar['transmission'] == 'Automatic') ? 'selected' : '' ?>>Automatic</option>
                         </select>
                     </label><br>
-                    <label>Fuel Type: 
+                    <label>Fuel Type:
                         <select name="fuel_type" required>
                             <option value="Petrol" <?= ($editingCar['fuel_type'] == 'Petrol') ? 'selected' : '' ?>>Petrol</option>
                             <option value="Electric" <?= ($editingCar['fuel_type'] == 'Electric') ? 'selected' : '' ?>>Electric</option>
@@ -222,7 +233,7 @@ $reservations = $reservationsStorage->findAll();
                     <label>Passengers: <input type="number" name="passengers" value="<?= $editingCar['passengers'] ?>" required></label><br>
                     <label>Daily Price (HUF): <input type="number" name="daily_price_huf" value="<?= $editingCar['daily_price_huf'] ?>" required></label><br>
                     <label>Image URL: <input type="text" name="image" value="<?= $editingCar['image'] ?>" required></label><br>
-                    <button type="submit">Save Changes</button>
+                    <button type="submit" id="save_btn">Save Changes</button>
                 </form>
                 <form method="post" style="display:inline;">
                     <input type="hidden" name="id" value="<?= $editingCar['id'] ?>">
@@ -264,4 +275,5 @@ $reservations = $reservationsStorage->findAll();
         </table>
     </div>
 </body>
+
 </html>
