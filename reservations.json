@@ -7,5 +7,14 @@
         "end_date": "2025-01-01",
         "user_email": "emanaftab2022@gmail.com",
         "id": 1
+    },
+    {
+        "car_id": 10,
+        "car_name": "Tesla Model X",
+        "car_image": "https:\/\/media.ed.edmunds-media.com\/tesla\/model-x\/2024\/oem\/2024_tesla_model-x_4dr-suv_plaid_fq_oem_1_815.jpg",
+        "start_date": "2025-01-03",
+        "end_date": "2025-01-04",
+        "user_email": "emanaftab2022@gmail.com",
+        "id": 2
     }
 ]

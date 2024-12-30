@@ -27,25 +27,26 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
     // If no errors, process login
     if (empty($errors)) {
-        // Check for admin credentials
-        if ($email === 'admin@ikarrental.hu' && $password === 'admin') {
-            $_SESSION['admin'] = true;
-            header('Location: admin_profile.php');  // Admin Profile Page
-            exit();
-        }
-
-        // Search for user by email if not admin
+        // Search for user by email
         $user = $userStorage->findOne(['email' => $email]);
 
         // Check if the user exists and passwords match (plain text comparison)
         if ($user && $password === $user['password']) { // Plain text comparison
-            // Store the user information in the session
-            $_SESSION['user'] = [
-                'fullname' => $user['fullname'],  // Ensure the name field matches the updated structure
-                'email' => $user['email'],
-            ];
-            header('Location: homepage.php');  // User's Homepage
-            exit;
+            if ($user['status'] === 'admin') {
+                $_SESSION['admin'] = true;
+                header('Location: admin_profile.php');  // Admin Profile Page
+                exit();
+            } else {
+                // Store the user information in the session
+                $_SESSION['user'] = [
+                    'fullname' => $user['fullname'],
+                    'email' => $user['email'],
+                    'status' => $user['status'],
+                    'id' => $user['id'],
+                ];
+                header('Location: homepage.php');  // User's Homepage
+                exit;
+            }
         } else {
             $errors['general'] = 'Invalid email or password.';
         }

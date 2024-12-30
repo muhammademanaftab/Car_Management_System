@@ -10,7 +10,8 @@ if (!isset($_SESSION['user'])) {
 $user = $_SESSION['user'];
 
 // Fetch user reservations
-function getUserReservations($userEmail) {
+function getUserReservations($userEmail)
+{
     $reservationStorage = new Storage(new JsonIO('reservations.json'));
     return $reservationStorage->findAll(['user_email' => $userEmail]);
 }
@@ -35,22 +36,26 @@ if (isset($_GET['delete_reservation'])) {
 
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>My Reservations - iKarRental</title>
     <link rel="stylesheet" href="reservations.css">
 </head>
+
 <body>
     <header>
         <div class="logo"><a href="homepage.php">iKarRental</a></div>
         <div class="nav">
-            <div class="profile-dropdown">
+            <!-- <div class="profile-dropdown">
                 <button class="profile-btn">Welcome, <?php echo htmlspecialchars($user['fullname']); ?></button>
                 <div class="dropdown-content">
                     <a href="profile.php">Profile Settings</a>
                 </div>
-            </div>
+            </div> -->
+
+            <a href="reservations.php" class="button">My Reservations</a>
             <a href="logout.php" class="button">Logout</a>
         </div>
     </header>
@@ -58,7 +63,7 @@ if (isset($_GET['delete_reservation'])) {
     <main>
         <section>
             <h2>My Reservations</h2>
-            <p><strong>User:</strong> <?php echo htmlspecialchars($user['fullname']); ?></p> <!-- Show the user's name -->
+            <p style="margin:10px "><strong>Name:</strong> <?php echo htmlspecialchars($user['fullname']); ?></p> <!-- Show the user's name -->
             <?php if (empty($userReservations)): ?>
                 <p>No reservations found.</p>
             <?php else: ?>
@@ -79,4 +84,5 @@ if (isset($_GET['delete_reservation'])) {
         </section>
     </main>
 </body>
+
 </html>

@@ -175,12 +175,14 @@ function getUserReservations($userEmail) {
         <div class="logo"><a href="homepage.php">iKarRental</a></div>
         <div class="nav">
             <?php if ($is_logged_in): ?>
-                <div class="profile-dropdown">
+                <!-- <div class="profile-dropdown">
                     <button class="profile-btn">Welcome, <?php echo htmlspecialchars($user['fullname']); ?></button>
                     <div class="dropdown-content">
                         <a href="reservations.php">My Reservations</a>
                     </div>
-                </div>
+                </div> -->
+
+                <a href="reservations.php" class="button">My Reservations</a>
                 <a href="logout.php" class="button">Logout</a>
             <?php else: ?>
                 <a href="login.php">Login</a>

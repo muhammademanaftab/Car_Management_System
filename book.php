@@ -46,24 +46,21 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $errors['until_date'] = "The 'Until' date must be after the 'From' date and in the correct format (YYYY-MM-DD).";
     }
 
-   
-// Check for overlapping reservations
-foreach ($existing_reservations as $reservation) {
-    $reservation_start = $reservation['start_date'];
-    $reservation_end = $reservation['end_date'];
+    // Check for overlapping reservations
+    foreach ($existing_reservations as $reservation) {
+        $reservation_start = $reservation['start_date'];
+        $reservation_end = $reservation['end_date'];
 
-    // Overlap conditions
-    if (
-        ($from_date >= $reservation_start && $from_date <= $reservation_end) || // Start date is within an existing reservation
-        ($until_date >= $reservation_start && $until_date <= $reservation_end) || // End date is within an existing reservation
-        ($from_date <= $reservation_start && $until_date >= $reservation_end)    // Fully overlaps an existing reservation
-    ) {
-        $errors['reservation'] = "The car is already booked for the selected dates.";
-        break;
+        // Overlap conditions
+        if (
+            ($from_date >= $reservation_start && $from_date <= $reservation_end) || // Start date is within an existing reservation
+            ($until_date >= $reservation_start && $until_date <= $reservation_end) || // End date is within an existing reservation
+            ($from_date <= $reservation_start && $until_date >= $reservation_end)    // Fully overlaps an existing reservation
+        ) {
+            $errors['reservation'] = "The car is already booked for the selected dates.";
+            break;
+        }
     }
-}
-
-
 
     // If no errors, proceed with booking
     if (empty($errors)) {
@@ -96,14 +93,16 @@ foreach ($existing_reservations as $reservation) {
         <div class="logo"><a href="homepage.php">iKarRental</a></div>
         <div class="nav">
             <?php if (isset($_SESSION['user'])): ?>
-                <div class="profile-dropdown">
-                    <button class="profile-btn">Welcome, <?php echo htmlspecialchars($_SESSION['user']['name']); ?></button>
+                <!-- <div class="profile-dropdown">
+                    <button class="profile-btn">Welcome, <?php echo htmlspecialchars($_SESSION['user']['fullname']); ?></button>
                     <div class="dropdown-content">
                         <a href="profile.php">Profile Settings</a>
                         <a href="reservations.php">My Reservations</a>
                     </div>
-                </div>
-                <a href="logout.php">Logout</a>
+                </div> -->
+                
+                <a href="reservations.php" class="button">My Reservations</a>
+                <a href="logout.php" class="button">Logout</a>
             <?php else: ?>
                 <a href="login.php">Login</a>
                 <a href="registration.php" class="button">Registration</a>

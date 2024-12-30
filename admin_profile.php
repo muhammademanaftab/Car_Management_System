@@ -119,10 +119,6 @@ $reservations = $reservationsStorage->findAll();
 <head>
     <link rel="stylesheet" href="admin_profile.css">
     <title>Admin Profile</title>
-    <style>
-        .form-section { display: none; }
-        .form-section.visible { display: block; }
-    </style>
     <script>
         function toggleForm(formId) {
             document.getElementById(formId).classList.toggle('visible');

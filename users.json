@@ -1,5 +1,12 @@
 [
     {
+        "fullname": "Admin User",
+        "email": "admin@ikarrental.hu",
+        "password": "admin",
+        "status": "admin",
+        "id": 0
+    },
+    {
         "fullname": "emanaftab",
         "email": "emanaftab2022@gmail.com",
         "password": "123456",
