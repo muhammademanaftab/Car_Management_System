@@ -9,187 +9,132 @@ body {
     font-family: Arial, sans-serif;
     background-color: #1c1c1c;
     color: white;
-    padding: 0;
-}
-
-/* Header Styling */
-header {
-    background-color: #333;
-    color: white;
     padding: 20px;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    position: fixed;
-    top: 0;
-    width: 100%;
-    z-index: 100;
 }
 
-header .logo a {
-    font-size: 30px;
-    font-weight: bold;
-    color: white;
-    text-decoration: none;
-}
-
-header .nav {
-    display: flex;
-    align-items: center;
-    gap: 15px;
-}
-
-header .nav a {
-    color: white;
-    text-decoration: none;
-    padding: 10px 20px;
-    border-radius: 5px;
-}
-
-header .nav a.button {
-    background-color: #f3b017;
-    color: black;
-}
-
-header .nav a:hover {
-    background-color: #555;
-}
-
-/* Profile Dropdown Styling */
-header .profile-dropdown {
-    position: relative;
-}
-
-header .profile-btn {
-    background-color: #444;
-    color: white;
-    border: none;
-    padding: 10px 20px;
-    border-radius: 5px;
-    cursor: pointer;
-}
-
-header .profile-btn:hover {
-    background-color: #555;
-}
-
-header .dropdown-content {
-    display: none;
-    position: absolute;
-    top: 100%;
-    right: 0;
-    background-color: #333;
-    border-radius: 5px;
-    overflow: hidden;
+/* Container */
+.container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 20px;
+    background-color: #2c2c2c;
+    border-radius: 10px;
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.5);
 }
 
-header .profile-dropdown:hover .dropdown-content {
-    display: block;
-}
-
-header .dropdown-content a {
-    display: block;
-    padding: 10px 20px;
-    color: white;
-    text-decoration: none;
-    transition: background-color 0.3s ease;
-}
-
-header .dropdown-content a:hover {
-    background-color: #444;
-}
-
-/* Main Content */
-main {
-    padding: 100px 30px 30px;
-}
-
-h1 {
+/* Headings */
+h1, h2 {
     text-align: center;
-    font-size: 2.5rem;
-    margin-bottom: 30px;
     color: #f3b017;
+    margin-bottom: 20px;
+    font-weight: bold;
 }
 
 h2 {
-    font-size: 2rem;
-    margin-bottom: 20px;
-    color: #f3b017;
-}
-
-#edit_car_btn{
-    margin-left: 500px;
-}
-
-#delete_car_btn{
-    /* margin: auto; */
+    margin-top: 40px;
+    border-bottom: 2px solid #f3b017;
+    padding-bottom: 10px;
 }
 
 /* Table Styling */
 table {
     width: 100%;
     border-collapse: collapse;
-    margin-bottom: 30px;
-    background-color: #2c2c2c;
-    border-radius: 5px;
+    margin-bottom: 20px;
+    background: #2c2c2c;
+    border-radius: 10px;
     overflow: hidden;
-}
-
-table, th, td {
-    border: 1px solid #444;
     text-align: left;
-    padding: 12px;
 }
 
-th {
-    background-color: #444;
+table th, table td {
+    padding: 12px 15px;
+    border: 1px solid #444;
+}
+
+table th {
+    background: #444;
+    color: white;
+    text-transform: uppercase;
+    font-weight: bold;
+}
+
+table tr:nth-child(even) {
+    background: #3c3c3c;
+}
+
+table tr:hover {
+    background: #555;
+}
+
+/* Buttons */
+button {
+    padding: 5px 5px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    font-weight: bold;
+    font-size: 0.9rem;
+    text-transform: uppercase;
+    transition: all 0.3s ease;
+    margin: 5px;
+    width: max-content;
+}
+
+button.edit {
+    background-color: #28a745; /* Green for edit */
     color: white;
 }
 
-tr:nth-child(even) {
-    background-color: #3c3c3c;
+button.edit:hover {
+    background-color: #218838;
+    transform: scale(1.05);
 }
 
-tr:hover {
-    background-color: #555;
+button.delete {
+    background-color: #dc3545; /* Red for delete */
+    color: white;
+    
+    width: max-content;
 }
 
-table td a {
-    color: #f3b017;
-    text-decoration: none;
-    transition: color 0.3s ease;
+button.delete:hover {
+    background-color: #c82333;
+    transform: scale(1.05);
 }
 
-table td a:hover {
-    color: #fff;
+button:active {
+    transform: scale(0.95);
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
 }
 
-/* Form Styling */
-form {
-    background-color: #2c2c2c;
+/* Form Section Styling */
+.form-section {
+    margin-top: 20px;
     padding: 20px;
-    border-radius: 5px;
-    margin-bottom: 30px;
+    background: #333;
+    border-radius: 10px;
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.5);
+    display: none;
+}
+
+.form-section.visible {
+    display: block;
 }
 
 form label {
-    display: block;
-    margin-bottom: 10px;
     font-weight: bold;
+    margin-bottom: 5px;
+    display: block;
     color: #f3b017;
 }
 
-form input, form select, form button {
-    width: 100%;
+form input, form select {
+    width: calc(100% - 20px);
     padding: 10px;
-    margin-bottom: 20px;
+    margin-bottom: 15px;
     border: none;
     border-radius: 5px;
-}
-
-form input, form select {
     background-color: #444;
     color: white;
 }
@@ -199,64 +144,36 @@ form input:focus, form select:focus {
     border: 2px solid #f3b017;
 }
 
+/* Form Button Styling */
 form button {
+    width: 100%;
     background-color: #f3b017;
     color: black;
     font-weight: bold;
     cursor: pointer;
-    transition: background-color 0.3s ease;
+    transition: background-color 0.3s ease, transform 0.2s ease;
 }
 
 form button:hover {
     background-color: #e6a414;
+    transform: scale(1.05);
 }
 
-/* List Styling */
-ul {
-    list-style-type: none;
-    padding: 0;
-}
-
-ul li {
-    background-color: #2c2c2c;
-    padding: 15px;
-    margin: 10px 0;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    border-radius: 5px;
-}
-
-ul li a {
-    color: #f3b017;
-    text-decoration: none;
-    font-size: 1rem;
-    transition: color 0.3s ease;
-}
-
-ul li a:hover {
-    color: #fff;
-}
-
-/* Mobile Responsiveness */
+/* Responsive Design */
 @media (max-width: 768px) {
-    header {
-        flex-direction: column;
-        align-items: flex-start;
-    }
-
-    header .nav {
-        flex-direction: column;
-        align-items: flex-start;
-        gap: 10px;
-    }
-
     table {
         font-size: 0.9rem;
     }
 
-    ul li {
-        flex-direction: column;
-        align-items: flex-start;
+    .container {
+        padding: 15px;
+    }
+
+    h1, h2 {
+        font-size: 1.5rem;
+    }
+
+    button {
+        font-size: 0.9rem;
     }
 }

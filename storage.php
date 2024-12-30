@@ -80,33 +80,27 @@ class Storage implements IStorage
 
   public function add($record): string
   {
-    // Find the highest existing key (string numeric) and increment it
-    $maxKey = 0;
-    foreach ($this->contents as $key => $item) {
-      $maxKey = max($maxKey, (int)$key);
-    }
-    $newKey = (string)($maxKey + 1); // Generate a new unique key as a string
-
-    $record['id'] = (int)$newKey; // Assign a numeric ID to the record
-    $this->contents[$newKey] = $record; // Add the record with the new key
-
-    return $newKey;
+      $ids = array_column($this->contents, 'id');
+      $newId = empty($ids) ? 1 : max($ids) + 1; // Generate a new unique ID
+      $record['id'] = $newId; // Assign the new ID
+      $this->contents[] = $record; // Append the record
+      return (string)$newId;
   }
+  
 
 
 
-  public function findById($id)
+  public function findById(string $id)
   {
-    foreach ($this->contents as $item) {
-      // Ensure both IDs are treated consistently as integers
-      if ((int)$item['id'] === (int)$id) {
-        return $item;
+      foreach ($this->contents as $item) {
+          if ((int)$item['id'] === (int)$id) {
+              return $item;
+          }
       }
-    }
-    error_log("Car with ID $id not found.");
-    return null;
+      error_log("Item with ID $id not found.");
+      return null;
   }
-
+  
 
 
 
@@ -131,16 +125,30 @@ class Storage implements IStorage
 
   public function update(string $id, $record)
   {
-    if (isset($this->contents[$id])) {
-      $record['id'] = $id; // Ensure the car's ID field matches the key
-      $this->contents[$id] = $record;
-    }
+      foreach ($this->contents as $key => $item) {
+          if ((int)$item['id'] === (int)$id) {
+              $record['id'] = (int)$id; // Ensure the ID is not changed
+              $this->contents[$key] = $record; // Update the record in place
+              return; // Exit after updating
+          }
+      }
+      error_log("Item with ID $id not found for update.");
   }
+  
 
-  public function delete(string $id)
-  {
-    unset($this->contents[$id]);
-  }
+public function delete(string $id)
+{
+    foreach ($this->contents as $key => $item) {
+        if ((int)$item['id'] === (int)$id) {
+            unset($this->contents[$key]);
+            $this->contents = array_values($this->contents); // Reindex to ensure consistency
+            return; // Exit after deleting
+        }
+    }
+    error_log("Item with ID $id not found for deletion.");
+}
+
+
 
   public function findMany(callable $condition)
   {
