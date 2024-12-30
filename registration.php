@@ -17,14 +17,12 @@ if ($_SERVER['REQUEST_METHOD'] === "POST") {
     $password = $_POST['password'] ?? '';
     $confirm_password = $_POST['confirm-password'] ?? '';
 
-    // Validation for full name
+    // Basic validation for full name
     if (empty($fullname)) {
         $errors['fullname'] = "Full name is required.";
-    } elseif (!preg_match("/^[a-zA-Z ]*$/", $fullname)) {
-        $errors['fullname'] = "Only letters and white space allowed.";
     }
 
-    // Validation for email address
+    // Basic validation for email address
     if (empty($email)) {
         $errors['email'] = "Email address is required.";
     } elseif (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
@@ -37,34 +35,27 @@ if ($_SERVER['REQUEST_METHOD'] === "POST") {
         }
     }
 
-    // Validation for password
+    // Basic validation for password
     if (empty($password)) {
         $errors['password'] = "Password is required.";
-    } elseif (strlen($password) < 6) {
-        $errors['password'] = "Password must be at least 6 characters long.";
     }
 
     // Validation for password confirmation
-    if (empty($confirm_password)) {
-        $errors['confirm-password'] = "Please confirm your password.";
-    } elseif ($password !== $confirm_password) {
+    if ($password !== $confirm_password) {
         $errors['confirm-password'] = "Passwords do not match.";
     }
 
     // If no errors, proceed to store the user
     if (empty($errors)) {
-        // Hash the password before storing
-        $hashedPassword = password_hash($password, PASSWORD_DEFAULT);
-
         // Save the user in the storage (users.json)
         $newUser = [
             'fullname' => $fullname,
             'email' => $email,
-            'password' => $hashedPassword,
+            'password' => $password, // Store password as plain text
             'status' => 'user'  // Default user status
         ];
 
-        $userStorage->add($newUser);  // Save the user in the JSON storage
+        $userStorage->add($newUser); // Save the user in the JSON storage
         $success = true;  // Registration success
     }
 }
@@ -97,13 +88,13 @@ if ($_SERVER['REQUEST_METHOD'] === "POST") {
 
             <form action="registration.php" method="POST">
                 <label for="fullname">Full name</label>
-                <input type="text" name="fullname" id="fullname" placeholder="Jakab Gips" value="<?php echo htmlspecialchars($fullname); ?>" >
+                <input type="text" name="fullname" id="fullname" placeholder="Your Name" value="<?php echo htmlspecialchars($fullname); ?>" >
                 <?php if (isset($errors['fullname'])) { ?>
                     <span style="color: red;"><?php echo $errors['fullname']; ?></span>
                 <?php } ?>
                 
                 <label for="email">Email address</label>
-                <input type="email" name="email" id="email" placeholder="jakab.gipsz@ikarrental.net" value="<?php echo htmlspecialchars($email); ?>" >
+                <input type="email" name="email" id="email" placeholder="email@example.com" value="<?php echo htmlspecialchars($email); ?>" >
                 <?php if (isset($errors['email'])) { ?>
                     <span style="color: red;"><?php echo $errors['email']; ?></span>
                 <?php } ?>
@@ -126,4 +117,3 @@ if ($_SERVER['REQUEST_METHOD'] === "POST") {
     </main>
 </body>
 </html>
-                    

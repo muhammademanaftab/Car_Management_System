@@ -1,22 +1,9 @@
-{
-    "6769c4b55679a": {
-        "name": "emn",
+[
+    {
+        "fullname": "emanaftab",
         "email": "emanaftab2022@gmail.com",
-        "password": "$2y$10$MKsDHUPd2mkxOF99ovTTl.ibhVexdojb40losEjsEA7PsPcDz52i6",
+        "password": "123456",
         "status": "user",
-        "id": "6769c4b55679a"
-    },
-    "emanaftab2022@gmail.com": {
-        "name": "Eman",
-        "email": "emanaftab2022@gmail.com",
-        "password": null,
-        "id": 0
-    },
-    "676e802f4a857": {
-        "name": "sdnlkn",
-        "email": "emanaftab2023@gmail.com",
-        "password": "$2y$10$jqZcb45LWJ.2JD\/mDv1MruH095CfuyGrkxRdgchEIbqL293a5Nkfe",
-        "status": "user",
-        "id": "676e802f4a857"
+        "id": 1
     }
-}
+]

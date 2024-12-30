@@ -37,11 +37,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         // Search for user by email if not admin
         $user = $userStorage->findOne(['email' => $email]);
 
-        // Check if the user exists and passwords match
-        if ($user && password_verify($password, $user['password'])) {
+        // Check if the user exists and passwords match (plain text comparison)
+        if ($user && $password === $user['password']) { // Plain text comparison
             // Store the user information in the session
             $_SESSION['user'] = [
-                'name' => $user['fullname'],  // Ensure the name field exists in the user data
+                'fullname' => $user['fullname'],  // Ensure the name field matches the updated structure
                 'email' => $user['email'],
             ];
             header('Location: homepage.php');  // User's Homepage

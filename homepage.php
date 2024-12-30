@@ -34,8 +34,6 @@ if (isset($_GET['until'])) {
     $until_date = $_GET['until'];
 }
 
-
-
 // Filter out booked cars
 $available_cars = [];
 foreach ($cars as $car) {
@@ -47,9 +45,9 @@ foreach ($cars as $car) {
             $reservation_start = $reservation['start_date'];
             $reservation_end = $reservation['end_date'];
 
-            if (($from_date != '' && $until_date != '' && 
+            if (($from_date != '' && $until_date != '' &&
                 (($reservation_start <= $until_date && $reservation_end >= $from_date) ||
-                 ($reservation_start <= $today && $reservation_end >= $today))) ||
+                ($reservation_start <= $today && $reservation_end >= $today))) ||
                 ($from_date == '' && $until_date == '' && $reservation_start <= $today && $reservation_end >= $today)) {
                 $is_available = false;
                 break;
@@ -162,8 +160,6 @@ function getUserReservations($userEmail) {
 }
 ?>
 
-
-
 <!DOCTYPE html>
 <html lang="en">
 
@@ -180,7 +176,7 @@ function getUserReservations($userEmail) {
         <div class="nav">
             <?php if ($is_logged_in): ?>
                 <div class="profile-dropdown">
-                    <button class="profile-btn">Welcome, <?php echo htmlspecialchars($user['name']); ?></button>
+                    <button class="profile-btn">Welcome, <?php echo htmlspecialchars($user['fullname']); ?></button>
                     <div class="dropdown-content">
                         <a href="reservations.php">My Reservations</a>
                     </div>

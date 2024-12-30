@@ -46,7 +46,7 @@ if (isset($_GET['delete_reservation'])) {
         <div class="logo"><a href="homepage.php">iKarRental</a></div>
         <div class="nav">
             <div class="profile-dropdown">
-                <button class="profile-btn">Welcome, <?php echo htmlspecialchars($user['name']); ?></button>
+                <button class="profile-btn">Welcome, <?php echo htmlspecialchars($user['fullname']); ?></button>
                 <div class="dropdown-content">
                     <a href="profile.php">Profile Settings</a>
                 </div>
@@ -58,6 +58,7 @@ if (isset($_GET['delete_reservation'])) {
     <main>
         <section>
             <h2>My Reservations</h2>
+            <p><strong>User:</strong> <?php echo htmlspecialchars($user['fullname']); ?></p> <!-- Show the user's name -->
             <?php if (empty($userReservations)): ?>
                 <p>No reservations found.</p>
             <?php else: ?>
