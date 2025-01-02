@@ -13,6 +13,7 @@ $showAddForm = false; // Toggle the Add New Car form
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     if (isset($_POST['action'])) {
         switch ($_POST['action']) {
+           
             case 'add_car':
                 $brand = $_POST['brand'] ?? '';
                 $model = $_POST['model'] ?? '';
@@ -22,10 +23,14 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 $passengers = $_POST['passengers'] ?? '';
                 $daily_price_huf = $_POST['daily_price_huf'] ?? '';
                 $image = $_POST['image'] ?? '';
-
+            
                 // Validate fields
-                if (empty($brand)) $errors['brand'] = "Brand is required.";
-                if (empty($model)) $errors['model'] = "Model is required.";
+                if (empty($brand) || !preg_match("/^[a-zA-Z\s]+$/", $brand)) {
+                    $errors['brand'] = "Brand must be a valid text and cannot contain numbers or special characters.";
+                }
+                if (empty($model) || !preg_match("/^[a-zA-Z\s]+$/", $model)) {
+                    $errors['model'] = "Model must be a valid text and cannot contain numbers or special characters.";
+                }
                 if (empty($year) || !is_numeric($year) || $year < 1900 || $year > date('Y')) {
                     $errors['year'] = "Year must be a valid number between 1900 and the current year.";
                 }
@@ -44,7 +49,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 if (empty($image) || !filter_var($image, FILTER_VALIDATE_URL)) {
                     $errors['image'] = "Image must be a valid URL.";
                 }
-
+            
                 // If no errors, add the car
                 if (empty($errors)) {
                     $newCar = [
@@ -61,6 +66,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 }
                 $showAddForm = true;
                 break;
+            
 
             case 'edit_car':
                 $editCarId = $_POST['id']; // Set the car to be edited

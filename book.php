@@ -62,7 +62,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         }
     }
 
-    // If no errors, proceed with booking
     if (empty($errors)) {
         $reservation = [
             'car_id' => $car['id'],
@@ -74,7 +73,12 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         ];
         $reservationStorage->add($reservation);
 
-        header('Location: reservations.php');
+        // Set a session variable to pass success message and booking details
+        $_SESSION['booking_success'] = [
+            'message' => "Your booking for " . htmlspecialchars($car['brand'] . ' ' . $car['model']) . " has been successfully confirmed!",
+            'details' => $reservation
+        ];
+        header('Location: book.php?car_id=' . $car_id);
         exit();
     }
 }
@@ -82,12 +86,14 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Book Car - iKarRental</title>
     <link rel="stylesheet" href="book.css">
 </head>
+
 <body>
     <header>
         <div class="logo"><a href="homepage.php">iKarRental</a></div>
@@ -100,7 +106,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                         <a href="reservations.php">My Reservations</a>
                     </div>
                 </div> -->
-                
+
                 <a href="reservations.php" class="button">My Reservations</a>
                 <a href="logout.php" class="button">Logout</a>
             <?php else: ?>
@@ -110,9 +116,60 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         </div>
     </header>
 
+
+    <?php if (isset($_SESSION['booking_success'])): ?>
+        <div class="success-overlay">
+            <div class="success-message">
+                <p><?php echo $_SESSION['booking_success']['message']; ?></p>
+                <h3>Booking Details</h3>
+                <ul>
+                    <li><strong>Car:</strong> <?php echo htmlspecialchars($_SESSION['booking_success']['details']['car_name']); ?></li>
+                    <li><strong>From:</strong> <?php echo htmlspecialchars($_SESSION['booking_success']['details']['start_date']); ?></li>
+                    <li><strong>Until:</strong> <?php echo htmlspecialchars($_SESSION['booking_success']['details']['end_date']); ?></li>
+                </ul>
+                <h3>Car Attributes</h3>
+                <ul>
+                    <li><strong>Brand:</strong> <?php echo htmlspecialchars($car['brand']); ?></li>
+                    <li><strong>Model:</strong> <?php echo htmlspecialchars($car['model']); ?></li>
+                    <li><strong>Year:</strong> <?php echo htmlspecialchars($car['year']); ?></li>
+                    <li><strong>Fuel Type:</strong> <?php echo htmlspecialchars($car['fuel_type']); ?></li>
+                    <li><strong>Transmission:</strong> <?php echo htmlspecialchars($car['transmission']); ?></li>
+                    <li><strong>Seats:</strong> <?php echo htmlspecialchars($car['passengers']); ?></li>
+                    <li><strong>Price per Day:</strong> <?php echo number_format($car['daily_price_huf']); ?> Ft/day</li>
+                </ul>
+            </div>
+        </div>
+        <?php unset($_SESSION['booking_success']); // Clear the session variable 
+        ?>
+    <?php endif; ?>
+
     <main>
         <section class="book-section">
             <h2>Book <?php echo htmlspecialchars($car['brand']) . ' ' . htmlspecialchars($car['model']); ?></h2>
+
+            <?php if (isset($_SESSION['booking_success'])): ?>
+                <div class="success-message">
+                    <p><?php echo $_SESSION['booking_success']['message']; ?></p>
+                    <h3>Booking Details</h3>
+                    <ul>
+                        <li><strong>Car:</strong> <?php echo htmlspecialchars($_SESSION['booking_success']['details']['car_name']); ?></li>
+                        <li><strong>From:</strong> <?php echo htmlspecialchars($_SESSION['booking_success']['details']['start_date']); ?></li>
+                        <li><strong>Until:</strong> <?php echo htmlspecialchars($_SESSION['booking_success']['details']['end_date']); ?></li>
+                    </ul>
+                    <h3>Car Attributes</h3>
+                    <ul>
+                        <li><strong>Brand:</strong> <?php echo htmlspecialchars($car['brand']); ?></li>
+                        <li><strong>Model:</strong> <?php echo htmlspecialchars($car['model']); ?></li>
+                        <li><strong>Year:</strong> <?php echo htmlspecialchars($car['year']); ?></li>
+                        <li><strong>Fuel Type:</strong> <?php echo htmlspecialchars($car['fuel_type']); ?></li>
+                        <li><strong>Transmission:</strong> <?php echo htmlspecialchars($car['transmission']); ?></li>
+                        <li><strong>Seats:</strong> <?php echo htmlspecialchars($car['passengers']); ?></li>
+                        <li><strong>Price per Day:</strong> <?php echo number_format($car['daily_price_huf']); ?> Ft/day</li>
+                    </ul>
+                </div>
+                <?php unset($_SESSION['booking_success']); // Clear the session variable 
+                ?>
+            <?php endif; ?>
 
             <div class="car-details">
                 <img src="<?php echo htmlspecialchars($car['image']); ?>" alt="Car Image" class="car-image">
@@ -149,6 +206,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 <button type="submit">Confirm Booking</button>
             </form>
         </section>
+
     </main>
 </body>
+
 </html>

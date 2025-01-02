@@ -243,28 +243,28 @@ function getUserReservations($userEmail) {
         </section>
 
         <section class="car-list">
-            <?php if (!empty($errors)): ?>
-                <p>Please correct the errors above.</p>
-            <?php elseif (empty($filtered_cars)): ?>
-                <p>No cars found matching your filters.</p>
-            <?php else: ?>
-                <?php foreach ($filtered_cars as $car): ?>
-                    <div class="car-card">
-                        <img src="<?php echo htmlspecialchars($car['image']); ?>" alt="<?php echo htmlspecialchars($car['brand']); ?> <?php echo htmlspecialchars($car['model']); ?>" class="car-image">
-                        <div class="car-info">
-                            <h3 class="car-name"><?php echo htmlspecialchars($car['brand']) . " " . htmlspecialchars($car['model']); ?></h3>
-                            <p class="car-price"><?php echo number_format($car['daily_price_huf']); ?> Ft/day</p>
-                            <p class="car-details"><?php echo htmlspecialchars($car['fuel_type']); ?> | <?php echo htmlspecialchars($car['transmission']); ?> | Year: <?php echo htmlspecialchars($car['year']); ?> | Passengers: <?php echo htmlspecialchars($car['passengers']); ?></p>
-                            <?php if ($is_logged_in): ?>
-                                <button class="book-button" onclick="window.location.href='book.php?car_id=<?php echo $car['id']; ?>'">Book</button>
-                            <?php else: ?>
-                                <button class="book-button" onclick="alert('Please log in to book.')">Book</button>
-                            <?php endif; ?>
-                        </div>
+    <?php if (!empty($errors)): ?>
+        <p>Please correct the errors above.</p>
+    <?php elseif (empty($filtered_cars)): ?>
+        <p>No cars found matching your filters.</p>
+    <?php else: ?>
+        <?php foreach ($filtered_cars as $car): ?>
+            <a href="book.php?car_id=<?php echo $car['id']; ?>" class="car-link">
+                <div class="car-card">
+                    <img src="<?php echo htmlspecialchars($car['image']); ?>" alt="<?php echo htmlspecialchars($car['brand']); ?> <?php echo htmlspecialchars($car['model']); ?>" class="car-image">
+                    <div class="car-info">
+                        <h3 class="car-name"><?php echo htmlspecialchars($car['brand']) . " " . htmlspecialchars($car['model']); ?></h3>
+                        <p class="car-price"><?php echo number_format($car['daily_price_huf']); ?> Ft/day</p>
+                        <p class="car-details"><?php echo htmlspecialchars($car['fuel_type']); ?> | <?php echo htmlspecialchars($car['transmission']); ?> | Year: <?php echo htmlspecialchars($car['year']); ?> | Passengers: <?php echo htmlspecialchars($car['passengers']); ?></p>
+                        <button class="book-button">Book</button>
                     </div>
-                <?php endforeach; ?>
-            <?php endif; ?>
-        </section>
+                    
+                </div>
+            </a>
+        <?php endforeach; ?>
+    <?php endif; ?>
+</section>
+
     </main>
 </body>
 </html>

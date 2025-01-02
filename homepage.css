@@ -106,6 +106,12 @@ header .dropdown-content a {
 header .dropdown-content a:hover {
     background-color: #575757;
 }
+
+.car-link {
+    text-decoration: none;
+    color: inherit; /* Optional: This ensures the text color matches the surrounding text */
+}
+
 /* Hero Section */
 .hero {
     text-align: center;

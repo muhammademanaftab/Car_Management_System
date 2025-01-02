@@ -20,6 +20,8 @@ if ($_SERVER['REQUEST_METHOD'] === "POST") {
     // Basic validation for full name
     if (empty($fullname)) {
         $errors['fullname'] = "Full name is required.";
+    }elseif (!preg_match("/^[a-zA-Z\s]+$/", $fullname)) {
+        $errors['fullname'] = "Full name must contain only letters and spaces.";
     }
 
     // Basic validation for email address

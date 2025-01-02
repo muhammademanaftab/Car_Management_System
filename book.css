@@ -218,6 +218,66 @@ form button:hover {
     margin-bottom: 10px;
 }
 
+/* Overlay Background */
+.success-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.7); /* Dark background with transparency */
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 1000;
+    animation: fadeIn 0.5s ease-out, fadeOut 1s 4s ease-out forwards;
+    pointer-events: none; /* Prevent interaction during fade-out */
+}
+
+.success-overlay.fade-out {
+    display: none; /* Hide the overlay completely after the fade-out animation */
+}
+
+/* Success Message */
+.success-message {
+    color: #fff;
+    background-color: #28a745;
+    padding: 20px;
+    border-radius: 8px;
+    text-align: center;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.2);
+    max-width: 400px;
+    font-size: 1rem;
+    animation: fadeIn 0.5s ease-out, fadeOut 1s 4s ease-out forwards;
+}
+
+/* Main Content */
+main {
+    transition: filter 0.5s ease-in-out;
+    filter: none; /* Default state: no blur */
+}
+
+
+/* Animations */
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+    }
+    to {
+        opacity: 1;
+    }
+}
+
+@keyframes fadeOut {
+    from {
+        opacity: 1;
+    }
+    to {
+        opacity: 0;
+    }
+}
+
+
 /* Footer Styling */
 footer {
     text-align: center;

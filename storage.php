@@ -78,15 +78,17 @@ class Storage implements IStorage
     $this->io->save($this->contents);
   }
 
-  public function add($record): string
-  {
-      $ids = array_column($this->contents, 'id');
-      $newId = empty($ids) ? 1 : max($ids) + 1; // Generate a new unique ID
-      $record['id'] = $newId; // Assign the new ID
-      $this->contents[] = $record; // Append the record
-      return (string)$newId;
+  public function add($record): string {
+    $id = uniqid();
+    if (is_array($record)) {
+      $record['id'] = $id;
+    }
+    else if (is_object($record)) {
+      $record->id = $id;
+    }
+    $this->contents[$id] = $record;
+    return $id;
   }
-  
 
 
 
