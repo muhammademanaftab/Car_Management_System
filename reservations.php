@@ -9,7 +9,6 @@ if (!isset($_SESSION['user'])) {
 
 $user = $_SESSION['user'];
 
-// Fetch user reservations
 function getUserReservations($userEmail)
 {
     $reservationStorage = new Storage(new JsonIO('reservations.json'));
@@ -18,17 +17,13 @@ function getUserReservations($userEmail)
 
 $userReservations = getUserReservations($user['email']);
 
-// Handle the deletion of a reservation
 if (isset($_GET['delete_reservation'])) {
     $reservationIdToDelete = $_GET['delete_reservation'];
 
-    // Initialize reservation storage
     $reservationStorage = new Storage(new JsonIO('reservations.json'));
 
-    // Delete the reservation from reservations.json
     $reservationStorage->delete($reservationIdToDelete);
 
-    // Redirect back to the reservations page
     header('Location: reservations.php');
     exit();
 }
@@ -48,13 +43,7 @@ if (isset($_GET['delete_reservation'])) {
     <header>
         <div class="logo"><a href="homepage.php">iKarRental</a></div>
         <div class="nav">
-            <!-- <div class="profile-dropdown">
-                <button class="profile-btn">Welcome, <?php echo htmlspecialchars($user['fullname']); ?></button>
-                <div class="dropdown-content">
-                    <a href="profile.php">Profile Settings</a>
-                </div>
-            </div> -->
-
+           
             <a href="reservations.php" class="button">My Reservations</a>
             <a href="logout.php" class="button">Logout</a>
         </div>
@@ -63,19 +52,19 @@ if (isset($_GET['delete_reservation'])) {
     <main>
         <section>
             <h2>My Reservations</h2>
-            <p style="margin:10px "><strong>Name:</strong> <?php echo htmlspecialchars($user['fullname']); ?></p> <!-- Show the user's name -->
+            <p style="margin:10px "><strong>Name:</strong> <?php echo ($user['fullname']); ?></p> <!-- Show the user's name -->
             <?php if (empty($userReservations)): ?>
                 <p>No reservations found.</p>
             <?php else: ?>
                 <div class="reservations-list">
                     <?php foreach ($userReservations as $reservation): ?>
                         <div class="reservation-card">
-                            <img src="<?php echo htmlspecialchars($reservation['car_image']); ?>" alt="<?php echo htmlspecialchars($reservation['car_name']); ?>" />
+                            <img src="<?php echo ($reservation['car_image']); ?>" alt="<?php echo ($reservation['car_name']); ?>" />
                             <div class="reservation-details">
-                                <p><strong>Car:</strong> <?php echo htmlspecialchars($reservation['car_name']); ?></p>
-                                <p><strong>From:</strong> <?php echo htmlspecialchars($reservation['start_date']); ?></p>
-                                <p><strong>To:</strong> <?php echo htmlspecialchars($reservation['end_date']); ?></p>
-                                <a href="reservations.php?delete_reservation=<?php echo htmlspecialchars($reservation['id']); ?>" onclick="return confirm('Are you sure you want to delete this reservation?')" class="delete-button">Delete</a>
+                                <p><strong>Car:</strong> <?php echo ($reservation['car_name']); ?></p>
+                                <p><strong>From:</strong> <?php echo ($reservation['start_date']); ?></p>
+                                <p><strong>To:</strong> <?php echo ($reservation['end_date']); ?></p>
+                                <a href="reservations.php?delete_reservation=<?php echo ($reservation['id']); ?>" onclick="return confirm('Are you sure you want to delete this reservation?')" class="delete-button">Delete</a>
                             </div>
                         </div>
                     <?php endforeach; ?>

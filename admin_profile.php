@@ -5,17 +5,16 @@ $carsStorage = new Storage(new JsonIO('cars.json'));
 $reservationsStorage = new Storage(new JsonIO('reservations.json'));
 
 $errors = [];
-$editCarId = null; // Track which car is being edited
-$editingCar = null; // Store the car being edited
-$showAddForm = false; // Toggle the Add New Car form
+$editCarId = null; 
+$editingCar = null; 
+$showAddForm = false;
 
-// Handle form submissions
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     if (isset($_POST['action'])) {
         switch ($_POST['action']) {
            
             case 'add_car':
-                $brand = $_POST['brand'] ?? '';
+                $brand = $_POST['brand'] ??  '';
                 $model = $_POST['model'] ?? '';
                 $year = $_POST['year'] ?? '';
                 $transmission = $_POST['transmission'] ?? '';
@@ -24,7 +23,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 $daily_price_huf = $_POST['daily_price_huf'] ?? '';
                 $image = $_POST['image'] ?? '';
             
-                // Validate fields
                 if (empty($brand) || !preg_match("/^[a-zA-Z\s]+$/", $brand)) {
                     $errors['brand'] = "Brand must be a valid text and cannot contain numbers or special characters.";
                 }
@@ -50,7 +48,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                     $errors['image'] = "Image must be a valid URL.";
                 }
             
-                // If no errors, add the car
                 if (empty($errors)) {
                     $newCar = [
                         'brand' => $brand,
@@ -69,7 +66,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             
 
             case 'edit_car':
-                $editCarId = $_POST['id']; // Set the car to be edited
+                $editCarId = $_POST['id']; 
                 $editingCar = $carsStorage->findById($editCarId);
                 break;
 
@@ -87,20 +84,19 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                     'image' => $_POST['image'],
                 ];
                 $carsStorage->update($carId, $updatedCar);
-                $editCarId = null; // Clear editing state
+                $editCarId = null; 
                 $editingCar = null;
                 break;
 
             case 'cancel_edit':
-                $editCarId = null; // Clear editing state
+                $editCarId = null;
                 $editingCar = null;
                 break;
 
             case 'delete_car':
                 $carId = $_POST['id'];
-                // Delete related reservations
                 $reservationsStorage->deleteMany(fn($reservation) => $reservation['car_id'] == $carId);
-                // Delete the car
+            
                 $carsStorage->delete($carId);
                 break;
 
@@ -116,7 +112,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     }
 }
 
-// Fetch all cars and reservations
 $cars = $carsStorage->findAll();
 $reservations = $reservationsStorage->findAll();
 ?>

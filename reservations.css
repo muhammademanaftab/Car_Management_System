@@ -1,18 +1,15 @@
-/* General Reset */
 * {
     margin: 0;
     padding: 0;
     box-sizing: border-box;
 }
 
-/* Body Styling */
 body {
     font-family: Arial, sans-serif;
     background-color: #1c1c1c;
     color: white;
 }
 
-/* Header Styling */
 header {
     background-color: #333;
     color: white;
@@ -89,9 +86,8 @@ header .dropdown-content a:hover {
     background-color: #575757;
 }
 
-/* My Reservations Section */
 main {
-    padding: 100px 20px 20px; /* Adjust for fixed header */
+    padding: 100px 20px 20px;
     max-width: 1200px;
     margin: 0 auto;
 }
@@ -140,7 +136,6 @@ h2 {
     color: #e67e22;
 }
 
-/* Responsive styling */
 @media (max-width: 768px) {
     .reservation-card {
         width: 100%;

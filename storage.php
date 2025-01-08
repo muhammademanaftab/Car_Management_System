@@ -103,14 +103,11 @@ class Storage implements IStorage
       return null;
   }
   
-
-
-
   public function findAll(array $params = [])
 {
     return array_filter($this->contents, function ($item) use ($params) {
         foreach ($params as $key => $value) {
-            if (!isset($item[$key]) || $item[$key] != $value) { // Loose comparison to handle type differences
+            if (!isset($item[$key]) || $item[$key] != $value) {
                 return false;
             }
         }
@@ -130,9 +127,9 @@ class Storage implements IStorage
   {
       foreach ($this->contents as $key => $item) {
           if ((int)$item['id'] === (int)$id) {
-              $record['id'] = (int)$id; // Ensure the ID is not changed
-              $this->contents[$key] = $record; // Update the record in place
-              return; // Exit after updating
+              $record['id'] = (int)$id; 
+              $this->contents[$key] = $record;
+              return; 
           }
       }
       error_log("Item with ID $id not found for update.");
@@ -144,8 +141,8 @@ public function delete(string $id)
     foreach ($this->contents as $key => $item) {
         if ((int)$item['id'] === (int)$id) {
             unset($this->contents[$key]);
-            $this->contents = array_values($this->contents); // Reindex to ensure consistency
-            return; // Exit after deleting
+            $this->contents = array_values($this->contents); 
+            return; 
         }
     }
     error_log("Item with ID $id not found for deletion.");
@@ -169,7 +166,6 @@ public function delete(string $id)
 
   public function save()
   {
-    // Use the correct save method to save to file (JSON, Serialize, etc.)
     $this->io->save($this->contents);
   }
 

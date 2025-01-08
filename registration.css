@@ -1,4 +1,3 @@
-/* General Reset */
 * {
     margin: 0;
     padding: 0;
@@ -17,14 +16,47 @@ body {
     margin: 0;
 }
 
-/* Header */
 header {
-    width: 100%;
-    padding: 10px 20px;
+    background-color: #333;
+    color: white;
+    padding: 20px;
     display: flex;
     justify-content: space-between;
     align-items: center;
-    background-color: #333;
+    position: fixed;
+    top: 0;
+    width: 100%;
+    z-index: 100;
+}
+
+header .logo a {
+    font-size: 30px;
+    font-weight: bold;
+    color: white;
+    text-decoration: none;
+}
+
+header .nav {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+}
+
+header .nav a {
+    color: white;
+    text-decoration: none;
+    margin-left: 15px;
+    padding: 10px 20px;
+    border-radius: 5px;
+}
+
+header .nav a.button {
+    background-color: #f3b017;
+    color: black;
+}
+
+header .nav a:hover {
+    background-color: #555;
 }
 
 .logo {
@@ -53,7 +85,6 @@ header {
     font-size: 1rem;
 }
 
-/* Main Section */
 main {
     flex-grow: 1;
     display: flex;

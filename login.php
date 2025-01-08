@@ -1,11 +1,9 @@
 <?php
 session_start();
-require_once 'storage.php'; // Include the necessary storage file
+require_once 'storage.php'; 
 
-// Initialize the JSON file handler for users
 $userStorage = new Storage(new JsonIO('users.json'));
 
-// Initialize variables
 $email = $password = '';
 $errors = [];
 
@@ -13,38 +11,32 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $email = $_POST['email'] ?? '';
     $password = $_POST['password'] ?? '';
 
-    // Validate email
     if (empty($email)) {
         $errors['email'] = 'Email is required.';
     } elseif (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
         $errors['email'] = 'Invalid email format.';
     }
 
-    // Validate password
     if (empty($password)) {
         $errors['password'] = 'Password is required.';
     }
 
-    // If no errors, process login
     if (empty($errors)) {
-        // Search for user by email
         $user = $userStorage->findOne(['email' => $email]);
 
-        // Check if the user exists and passwords match (plain text comparison)
-        if ($user && $password === $user['password']) { // Plain text comparison
+        if ($user && $password === $user['password']) { 
             if ($user['status'] === 'admin') {
                 $_SESSION['admin'] = true;
-                header('Location: admin_profile.php');  // Admin Profile Page
+                header('Location: admin_profile.php');  
                 exit();
             } else {
-                // Store the user information in the session
                 $_SESSION['user'] = [
                     'fullname' => $user['fullname'],
                     'email' => $user['email'],
                     'status' => $user['status'],
                     'id' => $user['id'],
                 ];
-                header('Location: homepage.php');  // User's Homepage
+                header('Location: homepage.php');  
                 exit;
             }
         } else {
@@ -76,20 +68,20 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
       <h1>Login</h1>
 
       <?php if (!empty($errors['general'])): ?>
-        <div class="error"><?php echo htmlspecialchars($errors['general']); ?></div>
+        <div class="error"><?php echo ($errors['general']); ?></div>
       <?php endif; ?>
 
       <form action="login.php" method="POST">
         <label for="email">Email address</label>
-        <input type="email" name="email" id="email" placeholder="Email" value="<?php echo htmlspecialchars($email); ?>">
+        <input type="email" name="email" id="email" placeholder="Email" value="<?php echo ($email); ?>">
         <?php if (isset($errors['email'])): ?>
-          <div class="error"><?php echo htmlspecialchars($errors['email']); ?></div>
+          <div class="error"><?php echo ($errors['email']); ?></div>
         <?php endif; ?>
 
         <label for="password">Password</label>
         <input type="password" name="password" id="password" placeholder="Password">
         <?php if (isset($errors['password'])): ?>
-          <div class="error"><?php echo htmlspecialchars($errors['password']); ?></div>
+          <div class="error"><?php echo ($errors['password']); ?></div>
         <?php endif; ?>
 
         <button type="submit">Login</button>
