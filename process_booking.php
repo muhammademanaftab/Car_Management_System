@@ -1,18 +1,42 @@
 <?php
 session_start();
+
 require_once 'storage.php';
 
 if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
+
     http_response_code(405);
     echo json_encode(['error' => 'Method not allowed']);
     exit();
 }
 
-$car_id = $_POST['car_id'] ?? null;
-$from_date = $_POST['from_date'] ?? '';
-$until_date = $_POST['until_date'] ?? '';
-$user_email = $_SESSION['user']['email'] ?? null;
+// seting up varibals
+if (isset($_POST['car_id'])) {
+    $car_id = $_POST['car_id'];
+} else {
+    $car_id = null;
+}
 
+if (isset($_POST['from_date'])) {
+    $from_date = $_POST['from_date'];
+} else {
+    $from_date = '';
+}
+
+if (isset($_POST['until_date'])) {
+    $until_date = $_POST['until_date'];
+} else {
+    $until_date = '';
+}
+
+if (isset($_SESSION['user']['email'])) {
+    $user_email = $_SESSION['user']['email'];
+} else {
+    $user_email = null;
+}
+
+
+// for erros handlings
 if (!$car_id || !$from_date || !$until_date || !$user_email) {
     echo json_encode([
         'success' => false,

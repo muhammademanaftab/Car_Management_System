@@ -1,7 +1,21 @@
 document.addEventListener('DOMContentLoaded', function() {
-    const carId = new URLSearchParams(window.location.search).get('car_id');    
+
+    // if flatpickr udefined then showing error on consoel for debugging and checking, and 
+    if (typeof flatpickr === 'undefined') {
+
+        console.log('Flatpickr library not loaded');
+
+        
+        return;
+    }
+    
+
+    // taking car id from url for use
+    const carId = new URLSearchParams(window.location.search).get('car_id');   
+    // extracting existing reservationfs of a car 
     async function getExistingReservations() {
         try {
+            // making a call for reseravtions
             const response = await fetch(`get_reservations.php?car_id=${carId}`);
             const data = await response.json();
             const reservationsArray = Object.values(data).filter(
@@ -9,11 +23,13 @@ document.addEventListener('DOMContentLoaded', function() {
             );
             return reservationsArray;
         } catch (error) {
-            console.error('Error fetching reservations:', error);
+            // for debgging purposes.
+            console.log('Error fetching reservations:', error);
             return [];
         }
     }
 
+    // initializitng flat picker 
     async function initializeDatePicker() {
         const reservations = await getExistingReservations();
         const disabledRanges = reservations.map(reservation => ({
@@ -21,6 +37,7 @@ document.addEventListener('DOMContentLoaded', function() {
             to: reservation.end_date
         }));
 
+        // setting up flatpickr
         const commonConfig = {
             minDate: "today",
             disable: disabledRanges,
@@ -56,6 +73,7 @@ document.addEventListener('DOMContentLoaded', function() {
             }
         });
 
+        // exposing picker
         window.fromPicker = fromPicker;
         window.untilPicker = untilPicker;
     }
@@ -89,6 +107,7 @@ document.addEventListener('DOMContentLoaded', function() {
                 });
             }
         } catch (error) {
+            // making an error prompt for showing on screen
             showModal({
                 title: 'Error',
                 message: 'An error occurred while processing your booking.',
@@ -127,6 +146,7 @@ document.addEventListener('DOMContentLoaded', function() {
         }
     }
 
+    // closing model from screen after specific time
     window.closeModal = function(button) {
         const modal = button.closest('.custom-modal');
         modal.classList.add('fade-out');
@@ -135,5 +155,6 @@ document.addEventListener('DOMContentLoaded', function() {
         }, 500);
     };
 
+    // initializing date picker.
     initializeDatePicker();
 });

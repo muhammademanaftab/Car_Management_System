@@ -13,6 +13,8 @@ if (isset($_SESSION['user'])) {
 $carStorage = new Storage(new JsonIO('cars.json'));
 $reservationStorage = new Storage(new JsonIO('reservations.json'));
 
+// setting up variables
+
 $cars = $carStorage->findAll();
 $reservations = $reservationStorage->findAll();
 
@@ -35,6 +37,7 @@ if ($from_date == '' && $until_date == '') {
     $available_cars = $cars;
 } else {
     foreach ($cars as $car) {
+
         $is_available = true;
 
         foreach ($reservations as $reservation) {
@@ -51,6 +54,7 @@ if ($from_date == '' && $until_date == '') {
         }
 
         if ($is_available) {
+
             $available_cars[] = $car;
         }
     }
@@ -60,16 +64,20 @@ if ($from_date == '' && $until_date == '') {
 $errors = [];
 $seats = 0;
 if (isset($_GET['seats'])) {
+
     $seats = (int)$_GET['seats'];
 }
 
 $transmission = '';
+
 if (isset($_GET['transmission'])) {
+
     $transmission = trim($_GET['transmission']);
 }
 
 $min_price = 0;
 if (isset($_GET['min_price'])) {
+
     $min_price = (int)$_GET['min_price'];
 }
 
@@ -79,6 +87,7 @@ if (isset($_GET['max_price'])) {
 }
 
 $from_date = '';
+
 if (isset($_GET['from'])) {
     $from_date = $_GET['from'];
 }
@@ -90,21 +99,21 @@ if (isset($_GET['until'])) {
 
 if ($from_date != '') {
     if (!strtotime($from_date) || $from_date < $today) {
-        $errors['from'] = "The 'From' date must be today or later and in a valid format.";
+        $errors['from'] = "The 'From' date must be today or later and in a valid format...";
     }
 }
 
 if ($until_date != '') {
     if (!strtotime($until_date) || $until_date <= $from_date) {
-        $errors['until'] = "The 'Until' date must be later than the 'From' date and in a valid format.";
+        $errors['until'] = "The 'Until' date must be later than the 'From' date and in a valid format...";
     }
 }
 
 if ($min_price < 0) {
-    $errors['min_price'] = "The minimum price must be 0 or greater.";
+    $errors['min_price'] = "The minimum price must be 0 or greatr.";
 }
 if ($max_price < $min_price) {
-    $errors['max_price'] = "The maximum price must be greater than or equal to the minimum price.";
+    $errors['max_price'] = "The maximum price must be greater than or equal to the minimum price.. ";
 }
 
 $filtered_cars = [];
@@ -204,6 +213,7 @@ function getUserReservations($userEmail) {
                         <option value="automatic" <?php echo ($_GET['transmission'] ?? '') === 'automatic' ? 'selected' : ''; ?>>Automatic</option>
                         <option value="manual" <?php echo ($_GET['transmission'] ?? '') === 'manual' ? 'selected' : ''; ?>>Manual</option>
                     </select>
+
                 </div>
                 <div>
                     <label for="min_price">Min Price</label>
@@ -229,6 +239,7 @@ function getUserReservations($userEmail) {
     <?php elseif (empty($filtered_cars)): ?>
         <p>No cars found matching your filters.</p>
     <?php else: ?>
+        <!-- filtering cars check kia ja skay or takay debug kia jaskya baad main -->
         <?php foreach ($filtered_cars as $car): ?>
             <a href="book.php?car_id=<?php echo $car['id']; ?>" class="car-link">
                 <div class="car-card">

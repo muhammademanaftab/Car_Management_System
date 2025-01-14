@@ -17,6 +17,7 @@ function getUserReservations($userEmail)
 
 $userReservations = getUserReservations($user['email']);
 
+
 if (isset($_GET['delete_reservation'])) {
     $reservationIdToDelete = $_GET['delete_reservation'];
 
@@ -52,11 +53,13 @@ if (isset($_GET['delete_reservation'])) {
     <main>
         <section>
             <h2>My Reservations</h2>
+            <!-- PRINTING USERNAME TO SHOW here -->
             <p style="margin:10px "><strong>Name:</strong> <?php echo ($user['fullname']); ?></p> <!-- Show the user's name -->
             <?php if (empty($userReservations)): ?>
                 <p>No reservations found.</p>
             <?php else: ?>
                 <div class="reservations-list">
+                    <!-- priting user all reservations -->
                     <?php foreach ($userReservations as $reservation): ?>
                         <div class="reservation-card">
                             <img src="<?php echo ($reservation['car_image']); ?>" alt="<?php echo ($reservation['car_name']); ?>" />

@@ -1,18 +1,24 @@
 <?php
 require_once 'storage.php';
+// incysind mine storage.php file above
 
 $carsStorage = new Storage(new JsonIO('cars.json'));
 $reservationsStorage = new Storage(new JsonIO('reservations.json'));
 
+
+// making variables for futures use to store errors or other things
 $errors = [];
 $editCarId = null; 
 $editingCar = null; 
 $showAddForm = false;
 
+
+// checking request method, if its posting or not also we can use get method too
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     if (isset($_POST['action'])) {
         switch ($_POST['action']) {
-           
+
+        //  making case for adding a car
             case 'add_car':
                 $brand = $_POST['brand'] ??  '';
                 $model = $_POST['model'] ?? '';
@@ -23,14 +29,15 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 $daily_price_huf = $_POST['daily_price_huf'] ?? '';
                 $image = $_POST['image'] ?? '';
             
+                // doing the validation part...
                 if (empty($brand) || !preg_match("/^[a-zA-Z\s]+$/", $brand)) {
-                    $errors['brand'] = "Brand must be a valid text and cannot contain numbers or special characters.";
+                    $errors['brand'] = "Brand must be a valid text and cannot contain numbers or special characters. ";
                 }
                 if (empty($model) || !preg_match("/^[a-zA-Z\s]+$/", $model)) {
                     $errors['model'] = "Model must be a valid text and cannot contain numbers or special characters.";
                 }
                 if (empty($year) || !is_numeric($year) || $year < 1900 || $year > date('Y')) {
-                    $errors['year'] = "Year must be a valid number between 1900 and the current year.";
+                    $errors['year'] = "Year must be a valid number between 1900 and the current year. ";
                 }
                 if (!in_array($transmission, ['Manual', 'Automatic'])) {
                     $errors['transmission'] = "Transmission must be 'Manual' or 'Automatic'.";
@@ -47,7 +54,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 if (empty($image) || !filter_var($image, FILTER_VALIDATE_URL)) {
                     $errors['image'] = "Image must be a valid URL.";
                 }
-            
+           
                 if (empty($errors)) {
                     $newCar = [
                         'brand' => $brand,
@@ -64,12 +71,13 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 $showAddForm = true;
                 break;
             
-
+// making case for car editing
             case 'edit_car':
                 $editCarId = $_POST['id']; 
                 $editingCar = $carsStorage->findById($editCarId);
                 break;
 
+// saving the car and other cases
             case 'save_car':
                 $carId = $_POST['id'];
                 $updatedCar = [
@@ -172,6 +180,7 @@ $reservations = $reservationsStorage->findAll();
         </table>
 
         <h2>Car Management</h2>
+
         <button onclick="toggleForm('addForm')" id="add_car_btn">Add New Car</button>
 
         <div id="addForm" class="form-section <?= $showAddForm ? 'visible' : '' ?>">
@@ -190,6 +199,7 @@ $reservations = $reservationsStorage->findAll();
                         <option value="Automatic" <?= (isset($_POST['transmission']) && $_POST['transmission'] == 'Automatic') ? 'selected' : '' ?>>Automatic</option>
                     </select>
                 </label>
+
                 <span style="color:red;"> <?= $errors['transmission'] ?? '' ?> </span><br>
                 <label>Fuel Type:
                     <select name="fuel_type" required>
@@ -208,6 +218,7 @@ $reservations = $reservationsStorage->findAll();
                 <span style="color:red;"> <?= $errors['image'] ?? '' ?> </span><br>
                 <button type="submit">Add Car</button>
             </form>
+
         </div>
 
         <?php if ($editingCar): ?>
@@ -242,6 +253,7 @@ $reservations = $reservationsStorage->findAll();
                     <button type="submit">Cancel</button>
                 </form>
             </div>
+
         <?php endif; ?>
 
         <h2>All Cars</h2>
@@ -273,6 +285,7 @@ $reservations = $reservationsStorage->findAll();
                     </td>
                 </tr>
             <?php endforeach; ?>
+            
         </table>
     </div>
 </body>

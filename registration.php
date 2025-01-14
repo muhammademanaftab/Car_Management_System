@@ -9,10 +9,31 @@ $jsonStorage = new JsonIO('users.json');
 $userStorage = new Storage($jsonStorage);
 
 if ($_SERVER['REQUEST_METHOD'] === "POST") {
-    $fullname = $_POST['fullname'] ?? '';
-    $email = $_POST['email'] ?? '';
-    $password = $_POST['password'] ?? '';
-    $confirm_password = $_POST['confirm-password'] ?? '';
+    // setiong up variables and their errors
+    if (isset($_POST['fullname'])) {
+        $fullname = $_POST['fullname'];
+    } else {
+        $fullname = '';
+    }
+    
+    if (isset($_POST['email'])) {
+        $email = $_POST['email'];
+    } else {
+        $email = '';
+    }
+    
+    if (isset($_POST['password'])) {
+        $password = $_POST['password'];
+    } else {
+        $password = '';
+    }
+    
+    if (isset($_POST['confirm-password'])) {
+        $confirm_password = $_POST['confirm-password'];
+    } else {
+        $confirm_password = '';
+    }
+    
 
     if (empty($fullname)) {
         $errors['fullname'] = "Full name is required.";
@@ -77,7 +98,9 @@ if ($_SERVER['REQUEST_METHOD'] === "POST") {
 
             <?php if ($success): ?>
                 <div style="color: green; font-weight: bold;">Registration successful! You can now log in.</div>
-                <a href="login.php">Login here</a>
+                
+                <a href="login.php" class="button-with-link">Login here</a>
+
             <?php endif; ?>
 
             <form action="registration.php" method="POST">
@@ -95,11 +118,13 @@ if ($_SERVER['REQUEST_METHOD'] === "POST") {
 
                 <label for="password">Password</label>
                 <input type="password" name="password" id="password" placeholder="********">
+
                 <?php if (isset($errors['password'])) { ?>
                     <span style="color: red;"><?php echo $errors['password']; ?></span>
                 <?php } ?>
 
                 <label for="confirm-password">Password again</label>
+
                 <input type="password" name="confirm-password" id="confirm-password" placeholder="********">
                 <?php if (isset($errors['confirm-password'])) { ?>
                     <span style="color: red;"><?php echo $errors['confirm-password']; ?></span>

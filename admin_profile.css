@@ -9,6 +9,7 @@ body {
     background-color: #1c1c1c;
     color: white;
     display: flex;
+
     flex-direction: column;
     align-items: center;
     height: 100%;
@@ -18,6 +19,7 @@ header {
     background-color: #333;
     color: white;
     padding: 20px;
+
     display: flex;
     justify-content: space-between;
     align-items: center;
@@ -29,6 +31,7 @@ header {
 
 header .logo a {
     font-size: 30px;
+
     font-weight: bold;
     color: white;
     text-decoration: none;
@@ -55,6 +58,7 @@ header .nav a:hover {
 .container {
     margin-top: 100px;
     width: 90%;
+
     max-width: 1200px;
     background-color: #2d2d2d;
     padding: 20px;
@@ -76,6 +80,7 @@ h2 {
 table {
     width: 100%;
     border-collapse: collapse;
+    
     margin-bottom: 20px;
 }
 

@@ -24,6 +24,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     if (empty($errors)) {
         $user = $userStorage->findOne(['email' => $email]);
 
+
         if ($user && $password === $user['password']) { 
             if ($user['status'] === 'admin') {
                 $_SESSION['admin'] = true;
@@ -65,6 +66,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
   <main>
     <div class="login-container">
+
       <h1>Login</h1>
 
       <?php if (!empty($errors['general'])): ?>
@@ -84,6 +86,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
           <div class="error"><?php echo ($errors['password']); ?></div>
         <?php endif; ?>
 
+        <!-- submit btn bnaaa rha hin jo debug krne main elp krega -->
         <button type="submit">Login</button>
       </form>
     </div>
